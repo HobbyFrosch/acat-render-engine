@@ -13,11 +13,6 @@ class TextDocument extends Document {
     /**
      * @var string
      */
-    private string $path;
-
-    /**
-     * @var string
-     */
     private string $content;
 
     /**
@@ -25,10 +20,7 @@ class TextDocument extends Document {
      * @throws DocumentException
      */
     public function __construct(string $path) {
-        if (!is_readable($path) || filesize($path) == 0) {
-            throw new DocumentException($path  . ' is not readable');
-        }
-        $this->path = $path;
+        parent::__construct($path);
         $this->content = file_get_contents($path);
     }
 

@@ -13,6 +13,7 @@
 
 namespace ACAT\Modul\Setting\Template\Model\Document;
 
+use ACAT\Document\Document;
 use ACAT\App\Exception\AppException;
 use ACAT\App\Exception\DatabaseException;
 use ACAT\App\Exception\ParseException;
@@ -32,7 +33,7 @@ use ZipArchive;
  * Class WordDocument
  * @package ACAT\Modul\Setting\Template\Model\Document
  */
-class WordDocument extends ACatDocument {
+class WordDocument extends Document {
 
     /**
 	 * @var ZipArchive|null
@@ -43,11 +44,6 @@ class WordDocument extends ACatDocument {
 	 * @var string
 	 */
 	private string $path;
-
-	/**
-	 * @var mixed|Logger
-	 */
-	private Logger $logger;
 
 	/**
 	 * @var array
@@ -276,4 +272,7 @@ class WordDocument extends ACatDocument {
 		}
 	}
 
+    function getContent(): string {
+        // TODO: Implement getContent() method.
+    }
 }
