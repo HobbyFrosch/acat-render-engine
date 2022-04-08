@@ -4,12 +4,13 @@ namespace Tests\Document\Text;
 
 use PHPUnit\Framework\TestCase;
 use ACAT\Document\Text\TextDocument;
+use ACAT\Document\Text\HtmlDocument;
 use ACAT\Exception\DocumentException;
 
 /**
  *
  */
-class TextDocumentTest extends TestCase {
+class HtmlDocumentTest extends TestCase {
 
     /**
      * @test
@@ -17,12 +18,12 @@ class TextDocumentTest extends TestCase {
      * @return void
      * @throws DocumentException
      */
-    public function createTextDocument() : void {
+    public function createHTMLDocument() : void {
 
-        $path = __DIR__ . '/file.txt';
+        $path = __DIR__ . '/test.html';
         $content = file_get_contents($path);
 
-        $textDocument = new TextDocument($path);
+        $textDocument = new HtmlDocument($path);
         $this->assertEquals($content, $textDocument->getContent());
 
         $content .= " new content";
@@ -44,4 +45,5 @@ class TextDocumentTest extends TestCase {
         $this->expectException(DocumentException::class);
         new TextDocument('/foo/foo');
     }
+
 }
