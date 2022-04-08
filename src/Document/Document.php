@@ -8,8 +8,13 @@ namespace ACAT\Document;
 abstract class Document {
 
     /**
-     * @return array
+     * @return void
      */
-    abstract function getContentParts() : array;
+    abstract function save() : void;
+
+    /**
+     * @return string
+     */
+    abstract function getContent() : string;
 
 }
