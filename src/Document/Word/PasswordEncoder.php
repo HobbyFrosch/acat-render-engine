@@ -1,21 +1,11 @@
 <?php
-/*
- * Copyright (c) 2021 - Akademie für Weiterbildung der Universtät Bremen
- *
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
- * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
- * All Rights eserved.
- * reviewed and modified by Akademie für Weiterbildung der Universtät Bremen
- */
 
-namespace ACAT\Modul\Setting\Template\Model\Document;
+namespace ACAT\Document\Word;
+
+use JetBrains\PhpStorm\Pure;
 
 /**
- * Class PasswordEncoder
- * @package ACAT\Modul\Setting\Template\Model\Document
+ *
  */
 class PasswordEncoder {
 
@@ -67,7 +57,7 @@ class PasswordEncoder {
 	/**
 	 * @var array[]
 	 */
-	private static $algorithmMapping = [
+	private static array $algorithmMapping = [
 		self::ALGORITHM_MD2        => [1, 'md2'],
 		self::ALGORITHM_MD4        => [2, 'md4'],
 		self::ALGORITHM_MD5        => [3, 'md5'],
@@ -84,7 +74,7 @@ class PasswordEncoder {
 	/**
 	 * @var int[]
 	 */
-	private static $initialCodeArray = [
+	private static array $initialCodeArray = [
 		0xE1F0,
 		0x1D0F,
 		0xCC9C,
@@ -105,7 +95,7 @@ class PasswordEncoder {
 	/**
 	 * @var int[][]
 	 */
-	private static $encryptionMatrix = [
+	private static array $encryptionMatrix = [
 		[0xAEFC, 0x4DD9, 0x9BB2, 0x2745, 0x4E8A, 0x9D14, 0x2A09],
 		[0x7B61, 0xF6C2, 0xFDA5, 0xEB6B, 0xC6F7, 0x9DCF, 0x2BBF],
 		[0x4563, 0x8AC6, 0x05AD, 0x0B5A, 0x16B4, 0x2D68, 0x5AD0],
@@ -135,7 +125,7 @@ class PasswordEncoder {
 	 * @param int $spinCount
 	 * @return string
 	 */
-	public static function hashPassword($password, $algorithmName = self::ALGORITHM_SHA_1, $salt = null, $spinCount = 10000) : string {
+	public static function hashPassword($password, string $algorithmName = self::ALGORITHM_SHA_1, $salt = null, int $spinCount = 10000) : string {
 
 		$origEncoding = mb_internal_encoding();
 		mb_internal_encoding('UTF-8');
@@ -179,13 +169,11 @@ class PasswordEncoder {
 		return $generatedKey;
 	}
 
-	/**
-	 * Get algorithm from self::$algorithmMapping
-	 *
-	 * @param string $algorithmName
-	 * @return string
-	 */
-	private static function getAlgorithm($algorithmName) : string {
+    /**
+     * @param string $algorithmName
+     * @return string
+     */
+	private static function getAlgorithm(string $algorithmName) : string {
 		$algorithm = self::$algorithmMapping[$algorithmName][1];
 		if ($algorithm == '') {
 			$algorithm = 'sha1';
@@ -194,32 +182,14 @@ class PasswordEncoder {
 		return $algorithm;
 	}
 
-	/**
-	 * Returns the algorithm ID
-	 *
-	 * @param string $algorithmName
-	 * @return int
-	 */
-	public static function getAlgorithmId($algorithmName) {
-		return self::$algorithmMapping[$algorithmName][0];
-	}
-
-	/**
-	 * Build combined key from low-order word and high-order word
-	 *
-	 * @param array $byteChars byte array representation of password
-	 * @return int
-	 */
-	private static function buildCombinedKey($byteChars) {
+    /**
+     * @param array $byteChars
+     * @return int
+     */
+	#[Pure(true)]
+    private static function buildCombinedKey(array $byteChars) : int {
 		$byteCharsLength = count($byteChars);
-		// Compute the high-order word
-		// Initialize from the initial code array (see above), depending on the passwords length.
 		$highOrderWord = self::$initialCodeArray[$byteCharsLength - 1];
-
-		// For each character in the password:
-		//   For every bit in the character, starting with the least significant and progressing to (but excluding)
-		//   the most significant, if the bit is set, XOR the key’s high-order word with the corresponding word from
-		//   the Encryption Matrix
 		for ($i = 0; $i < $byteCharsLength; $i++) {
 			$tmp = self::$passwordMaxLength - $byteCharsLength + $i;
 			$matrixRow = self::$encryptionMatrix[$tmp];
@@ -230,28 +200,21 @@ class PasswordEncoder {
 			}
 		}
 
-		// Compute low-order word
-		// Initialize with 0
 		$lowOrderWord = 0;
-		// For each character in the password, going backwards
+
 		for ($i = $byteCharsLength - 1; $i >= 0; $i--) {
-			// low-order word = (((low-order word SHR 14) AND 0x0001) OR (low-order word SHL 1) AND 0x7FFF)) XOR character
 			$lowOrderWord = ( ( ( ( $lowOrderWord >> 14 ) & 0x0001 ) | ( ( $lowOrderWord << 1 ) & 0x7FFF ) ) ^ $byteChars[$i] );
 		}
-		// Lastly, low-order word = (((low-order word SHR 14) AND 0x0001) OR (low-order word SHL 1) AND 0x7FFF)) XOR strPassword length XOR 0xCE4B.
+
 		$lowOrderWord = ( ( ( ( $lowOrderWord >> 14 ) & 0x0001 ) | ( ( $lowOrderWord << 1 ) & 0x7FFF ) ) ^ $byteCharsLength ^ 0xCE4B );
 
-		// Combine the Low and High Order Word
 		return self::int32(( $highOrderWord << 16 ) + $lowOrderWord);
 	}
 
-	/**
-	 * Simulate behaviour of (signed) int32
-	 *
-	 * @codeCoverageIgnore
-	 * @param int $value
-	 * @return int
-	 */
+    /**
+     * @param $value
+     * @return int
+     */
 	private static function int32($value) : int {
 		$value = ( $value & 0xFFFFFFFF );
 

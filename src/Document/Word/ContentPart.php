@@ -1,7 +1,10 @@
 <?php
 
-namespace ACAT\Document;
+namespace ACAT\Document\Word;
 
+
+use DOMXPath;
+use DOMDocument;
 
 /**
  *
@@ -19,21 +22,37 @@ abstract class ContentPart {
     protected string $content;
 
     /**
-     * @param string $path
+     * @var DOMXPath
      */
-    public function __construct(string $path) {
+    protected DOMXPath $domXpath;
+
+    /**
+     * @var DOMDocument
+     */
+    protected DOMDocument $domDocument;
+
+    /**
+     * @param string $path
+     * @param DOMDocument $domDocument
+     */
+    public function __construct(string $path, DOMDocument $domDocument) {
         $this->path = $path;
+        $this->domDocument = $domDocument;
     }
 
     /**
      * @return string
      */
-    abstract function getContent() : string;
+    public function getContent(): string {
+        return $this->content;
+    }
 
     /**
      * @param string $content
      * @return void
      */
-    abstract function setContent(string $content) : void;
+    public function setContent(string $content): void {
+        $this->content = $content;
+    }
 
 }

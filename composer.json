@@ -18,7 +18,10 @@
     "ext-json": "*",
     "ext-xml": "*",
     "ext-dom": "*",
-    "ext-zip": "*"
+    "ext-zip": "*",
+    "ext-mbstring": "*",
+    "ext-openssl": "*",
+    "symfony/uid": "^5.2"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.3.8"

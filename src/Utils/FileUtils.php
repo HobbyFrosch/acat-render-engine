@@ -2,6 +2,8 @@
 
 namespace ACAT\Utils;
 
+use JetBrains\PhpStorm\Pure;
+
 /**
  *
  */
@@ -9,29 +11,14 @@ class FileUtils {
 
     /**
      * @param string $file
-     *
-     * @return bool|string
+     * @return string
      */
-    static function stripTrailingSlash(string $file) {
+    #[Pure]
+    static function stripTrailingSlash(string $file): string {
         if ($file === '' || !StringUtils::startsWith($file, '/')) {
             return $file;
         }
         return substr($file, 1);
-    }
-
-    /**
-     * @param $folder
-     */
-    static function deleteFolderRecursively($folder) {
-        foreach (glob("{$folder}/*") as $file) {
-            if (is_dir($file)) {
-                self::deleteFolderRecursively($file);
-            }
-            else {
-                unlink($file);
-            }
-        }
-        rmdir($folder);
     }
 
 }

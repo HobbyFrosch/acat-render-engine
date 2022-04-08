@@ -3,6 +3,7 @@
 namespace ACAT\Document\Word;
 
 use ZipArchive;
+use ACAT\Utils\FileUtils;
 use ACAT\Document\Document;
 use ACAT\Exception\DocumentException;
 

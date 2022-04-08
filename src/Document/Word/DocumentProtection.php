@@ -1,24 +1,12 @@
 <?php
-/*
- * Copyright (c) 2021 - Akademie für Weiterbildung der Universtät Bremen
- *
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
- * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
- * All Rights eserved.
- * reviewed and modified by Akademie für Weiterbildung der Universtät Bremen
- */
 
-namespace ACAT\Modul\Setting\Template\Model\Document;
+namespace ACAT\Document\Word;
 
-use ACAT\App\Exception\AppException;
 use Exception;
+use ACAT\Exception\DocumentException;
 
 /**
- * Class DocumentProtection
- * @package ACAT\Modul\Setting\Template\Model\Document\Element
+ *
  */
 class DocumentProtection {
 
@@ -47,11 +35,10 @@ class DocumentProtection {
 	 */
 	private ?string $salt;
 
-	/**
-	 * DocumentProtection constructor.
-	 * @param string|null $password
-	 * @throws Exception
-	 */
+    /**
+     * @param string|null $password
+     * @throws Exception
+     */
 	public function __construct(?string $password = null) {
 
 		if (!$password) {
@@ -122,14 +109,15 @@ class DocumentProtection {
 		return $this->salt;
 	}
 
-	/**
-	 * @param $salt
-	 * @throws AppException
-	 */
+    /**
+     * @param $salt
+     * @return void
+     * @throws DocumentException
+     */
 	public function setSalt($salt) : void {
 
 		if ($salt !== null && strlen($salt) !== 16) {
-			throw new AppException('salt has to be of exactly 16 bytes length');
+			throw new DocumentException('salt has to be of exactly 16 bytes length');
 		}
 
 		$this->salt = $salt;
