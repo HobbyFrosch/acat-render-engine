@@ -1,0 +1,34 @@
+{
+  "name": "acat/render-engine",
+  "type" : "library",
+  "description": "renders documents",
+  "version" : "0.0.1",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Ronny Krämer",
+      "email": "ronny.kraemer@uni-bremen.de"
+    }
+  ],
+  "config": {
+    "sort-packages": true
+  },
+  "require": {
+    "php": ">=8.0",
+    "ext-json": "*",
+    "ext-xml": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.3.8"
+  },
+  "autoload": {
+    "psr-4": {
+      "ACAT\\Render\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "test/"
+    }
+  }
+}
