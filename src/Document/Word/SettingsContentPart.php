@@ -3,6 +3,7 @@
 
 namespace ACAT\Document\Word;
 
+use ACAT\Document\WordContentPart;
 use DOMException;
 use ACAT\Exception\DocumentException;
 use ACAT\Placeholder\WordDocumentProtectionPlaceholder;
@@ -10,7 +11,7 @@ use ACAT\Placeholder\WordDocumentProtectionPlaceholder;
 /**
  *
  */
-class SettingsContentPart extends ContentPart {
+class SettingsContentPart extends WordContentPart {
 
     /**
      * @param DocumentProtectionn $documentProtection

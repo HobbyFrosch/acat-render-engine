@@ -30,9 +30,4 @@ abstract class Document {
      */
     abstract function save() : void;
 
-    /**
-     * @return string
-     */
-    abstract function getContent() : string;
-
 }

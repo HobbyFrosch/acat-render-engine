@@ -2,9 +2,12 @@
 
 namespace ACAT\Document\Word;
 
+use DOMDocument;
+use Exception;
 use ZipArchive;
 use ACAT\Utils\FileUtils;
 use ACAT\Document\Document;
+use ACAT\Document\WordContentPart;
 use ACAT\Exception\DocumentException;
 
 /**
@@ -12,7 +15,7 @@ use ACAT\Exception\DocumentException;
  */
 class WordDocument extends Document {
 
-    /**
+	/**
 	 * @var ZipArchive|null
 	 */
 	private ?ZipArchive $zipArchive = null;
@@ -27,11 +30,11 @@ class WordDocument extends Document {
 	 */
 	private const ROOT = "[Content_Types].xml";
 
-    /**
-     * @return array
-     * @throws DocumentException
-     */
-	public function getContentParts() : array {
+	/**
+	 * @return array
+	 * @throws DocumentException
+	 */
+	public function getContentParts(): array {
 
 		if (!$this->zipArchive) {
 			throw new DocumentException('document is not open');
@@ -59,7 +62,7 @@ class WordDocument extends Document {
 					$contentPart = new SettingsContentPart($path, $content);
 				}
 				else {
-					$contentPart = new ContentPart($path, $content);
+					$contentPart = new WordContentPart($path, $content);
 				}
 
 				$this->contentParts[$path] = $contentPart;
@@ -74,90 +77,63 @@ class WordDocument extends Document {
 
 	/**
 	 * @param string|null $password
+	 * @return void
+	 * @throws DocumentException
 	 * @throws Exception
 	 */
-	public function protect(string $password = null) : void {
+	public function protect(string $password = null): void {
 
 		$settingsContentPart = $this->getContentParts()['word/settings.xml'];
 
 		if (!$settingsContentPart) {
-			throw new AppException($this->path . ' has no settings');
+			throw new DocumentException($this->path . ' has no settings');
 		}
 
 		$settingsContentPart->protect(new DocumentProtection($password));
 
 	}
 
-    /**
-     *
-     */
-	public function removeAddIns() : void {
-	    $this->zipArchive->deleteName('word/webextensions/');
-    }
-
-    /**
-     * @param CoreRecordModel|null $recordModel
-     * @param CoreTemplateModel $settingTemplateRecordModel
-     * @throws AppException
-     * @throws CacheException
-     * @throws DatabaseException
-     * @throws InvalidArgumentException
-     */
-	public function render(?CoreRecordModel $recordModel, CoreTemplateModel $settingTemplateRecordModel) : void {
-
-	    foreach ($this->getContentParts() as $contentPart) {
-	        $renderEngine = new RenderEngine($contentPart, $settingTemplateRecordModel);
-	        if ($recordModel) {
-	            $renderEngine->render($recordModel->getId());
-            }
-	        else {
-	            $renderEngine->render();
-            }
-	    }
-	}
-
 	/**
 	 * @param string $file
 	 * @return string
-	 * @throws AppException
+	 * @throws DocumentException
 	 */
-	private function readFromFile(string $file) : string {
-
+	private function readFromFile(string $file): string {
 		if (!$this->zipArchive) {
-			throw new AppException('document ' . $this->path . ' is not open');
+			throw new DocumentException('document ' . $this->path . ' is not open');
 		}
-
 		return $this->zipArchive->getFromName($file);
-
 	}
 
 	/**
-	 * @throws AppException
+	 * @return void
+	 * @throws DocumentException
 	 */
-	public function open() : void {
+	public function open(): void {
 		if (!$this->zipArchive) {
 			$zipArchive = new ZipArchive();
 			if (($result = $zipArchive->open($this->path)) === true) {
 				$this->zipArchive = $zipArchive;
 			}
 			else {
-				throw new AppException('could not open document ' . $this->path. ' (' . $result . ')');
+				throw new DocumentException('could not open document ' . $this->path . ' (' . $result . ')');
 			}
 		}
 	}
 
 	/**
 	 * @param bool $save
-	 * @throws AppException
+	 * @return void
+	 * @throws DocumentException
 	 */
-	public function close(bool $save = false) : void {
+	public function close(bool $save = false): void {
 
 		if ($save) {
 			$this->save();
 		}
 
 		if (!$this->zipArchive) {
-			throw new AppException('no document is open');
+			throw new DocumentException('no document is open');
 		}
 
 		$this->zipArchive->close();
@@ -166,26 +142,41 @@ class WordDocument extends Document {
 	}
 
 	/**
-	 * @throws AppException
+	 * @return void
+	 * @throws DocumentException
 	 */
-	public function save() : void {
+	public function save(): void {
 
 		if (!$this->zipArchive) {
-			throw new AppException('no document is open');
+			throw new DocumentException('no document is open');
 		}
 
 		foreach ($this->contentParts as $contentPart) {
 
 			if (!$this->zipArchive->deleteName($contentPart->getPath())) {
-				throw new AppException('could not delete content part ' . $contentPart->getPath() . ' in document ' . $this->path);
+				throw new DocumentException('could not delete content part ' . $contentPart->getPath() . ' in document ' . $this->path);
 			}
 
 			if (!$this->zipArchive->addFromString($contentPart->getPath(), $contentPart->getContent())) {
-				throw new AppException('could not save content part ' . $contentPart->getPath() . ' in document ' . $this->path);
+				throw new DocumentException('could not save content part ' . $contentPart->getPath() . ' in document ' . $this->path);
 			}
 
 		}
 	}
+
+	/**
+	 * @param string $content
+	 * @return DOMDocument
+	 */
+	private function getDomDocument(string $content) : DOMDocument {
+
+		$domDocument = new DOMDocument('1.0', 'utf-8');
+		$domDocument->loadXML($content);
+
+		return $domDocument;
+
+	}
+
 
 	/**
 	 *
@@ -193,12 +184,9 @@ class WordDocument extends Document {
 	public function __destruct() {
 		try {
 			$this->close();
-		} catch (AppException $e) {
+		}
+		catch (DocumentException) {
 			//
 		}
 	}
-
-    function getContent(): string {
-        // TODO: Implement getContent() method.
-    }
 }
