@@ -7,7 +7,6 @@ use Exception;
 use ZipArchive;
 use ACAT\Utils\FileUtils;
 use ACAT\Document\Document;
-use ACAT\Document\WordContentPart;
 use ACAT\Exception\DocumentException;
 
 /**
@@ -176,7 +175,6 @@ class WordDocument extends Document {
 		return $domDocument;
 
 	}
-
 
 	/**
 	 *

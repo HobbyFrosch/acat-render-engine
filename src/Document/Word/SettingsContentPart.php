@@ -3,7 +3,6 @@
 
 namespace ACAT\Document\Word;
 
-use ACAT\Document\WordContentPart;
 use DOMException;
 use ACAT\Exception\DocumentException;
 use ACAT\Placeholder\WordDocumentProtectionPlaceholder;

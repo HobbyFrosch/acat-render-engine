@@ -1,14 +1,18 @@
 <?php
 
-namespace  ACAT\Document;
+namespace ACAT\Document\Word;
 
-use DOMDocument;
-use DOMXPath;
+use ACAT\Document\ContentPart;
 
 /**
- * 
+ *
  */
- class WordContentPart extends ContentPart {
+class WordContentPart extends ContentPart {
+
+	/**
+	 *
+	 */
+	protected string $path;
 
 	/**
 	 * @var array
@@ -21,7 +25,7 @@ use DOMXPath;
 		'r'     => 'https://schemas.openxmlformats.org/officeDocument/2006/relationships',
 		'm'     => 'https://schemas.openxmlformats.org/officeDocument/2006/math',
 		'v'     => 'urn:schemas-microsoft-com:vml',
-		'w'		=> 'https://schemas.openxmlformats.org/wordprocessingml/2006/main',
+		'w'     => 'https://schemas.openxmlformats.org/wordprocessingml/2006/main',
 		'wp14'  => 'https://schemas.microsoft.com/office/word/2010/wordprocessingDrawing',
 		'wp'    => 'https://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing',
 		'w10'   => 'urn:schemas-microsoft-com:office:word',
@@ -33,13 +37,30 @@ use DOMXPath;
 		'wne'   => 'https://schemas.microsoft.com/office/word/2006/wordml',
 		'wps'   => 'https://schemas.microsoft.com/office/word/2010/wordprocessingShape',
 		'a'     => 'https://schemas.openxmlformats.org/drawingml/2006/main',
-		'acat'	=> 'https://schemas.acat.akademie.uni-bremen.de'
+		'acat'  => 'https://schemas.acat.akademie.uni-bremen.de'
 	];
 
-     /**
-      * @return array
-      */
-    public function getNamespaces(): array {
-        return $this->namespaces;
-     }
- }
+	/**
+	 * @param string $path
+	 * @param string $content
+	 */
+	public function __construct(string $path, string $content) {
+		$this->path = $path;
+		parent::__construct($content);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getNamespaces(): array {
+		return $this->namespaces;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getPath(): string {
+		return $this->path;
+	}
+
+}
