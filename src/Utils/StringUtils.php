@@ -36,7 +36,7 @@ class StringUtils {
      * @return bool
      */
     static function contains(string $haystack, $needle) : bool {
-        if (empty($needle) ||! !is_string($needle)) {
+        if (empty($needle) || !is_string($needle)) {
             return false;
         }
         return !((stripos($haystack, $needle) === false));

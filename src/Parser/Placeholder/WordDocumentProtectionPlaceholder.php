@@ -1,11 +1,11 @@
 <?php
 
-namespace ACAT\Placeholder;
+namespace ACAT\Parser\Placeholder;
 
-use DOMException;
-use DOMDocument;
-use DOMNode;
 use ACAT\Document\Word\DocumentProtection;
+use DOMDocument;
+use DOMException;
+use DOMNode;
 
 /**
  *
@@ -47,11 +47,11 @@ class WordDocumentProtectionPlaceholder extends ACatPlaceholder {
 							  		  w:edit="' . $edit . '"/>';
 	}
 
-    /**
-     * @param DOMDocument $domDocument
-     * @return DOMNode
-     * @throws DOMException
-     */
+	/**
+	 * @param DOMDocument $domDocument
+	 * @return DOMNode
+	 * @throws DOMException
+	 */
 	public function getDOMNode(DOMDocument $domDocument) : DOMNode {
 
 		$edit = $this->documentProtection->getEditing();

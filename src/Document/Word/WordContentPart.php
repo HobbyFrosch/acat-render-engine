@@ -15,6 +15,11 @@ class WordContentPart extends ContentPart {
 	protected string $path;
 
 	/**
+	 * @var array|string[]
+	 */
+	protected array $hierarchy = ['w:t', 'w:r', 'w:p'];
+
+	/**
 	 * @var array
 	 */
 	public array $namespaces = [
@@ -61,6 +66,13 @@ class WordContentPart extends ContentPart {
 	 */
 	public function getPath(): string {
 		return $this->path;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getHierarchy(): array {
+		return $this->hierarchy;
 	}
 
 }

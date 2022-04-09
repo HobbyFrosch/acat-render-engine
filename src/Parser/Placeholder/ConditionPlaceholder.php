@@ -1,27 +1,15 @@
 <?php
-/*
- * Copyright (c) 2020 - Akademie für Weiterbildung der Universtät Bremen
- *
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
- * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
- * All Rights eserved.
- * reviewed and modified by Akademie für Weiterbildung der Universtät Bremen
- */
 
-namespace ACAT\Modul\Setting\Template\Model\Placeholder;
+namespace ACAT\Parser\Placeholder;
 
-
-use ACAT\App\Exception\AppException;
-use ACAT\App\Util\StringUtils;
+use ACAT\Exception\PlaceholderException;
+use ACAT\Utils\StringUtils;
 use DOMDocument;
+use DOMException;
 use DOMNode;
 
 /**
- * Class ConditionNode
- * @package ACAT\Modul\Setting\Template\Model
+ *
  */
 class ConditionPlaceholder extends ACatPlaceholder {
 
@@ -55,12 +43,12 @@ class ConditionPlaceholder extends ACatPlaceholder {
 	 * @param $fieldId
 	 * @param $action
 	 * @param $expression
-	 * @throws AppException
+	 * @throws PlaceholderException
 	 */
 	public function  __construct($fieldId, $action, $expression) {
 
 		if (empty($fieldId) || empty($expression)) {
-			throw new AppException("invalid condition node {$fieldId} {$action} {$expression}");
+			throw new PlaceholderException("invalid condition node {$fieldId} {$action} {$expression}");
 		}
 
 		$this->fieldId = $fieldId;
@@ -87,12 +75,13 @@ class ConditionPlaceholder extends ACatPlaceholder {
 
 	/**
 	 * @param string $action
-	 * @throws AppException
+	 * @return void
+	 * @throws PlaceholderException
 	 */
 	public function setAction(string $action) : void {
 
 		if (!in_array($action, $this->availableActions)) {
-			throw new AppException(  "action $action is not implemented");
+			throw new PlaceholderException(  "action $action is not implemented");
 		}
 
 		$this->action = $action;
@@ -108,24 +97,26 @@ class ConditionPlaceholder extends ACatPlaceholder {
 
 	/**
 	 * @param string $expression
-	 * @throws AppException
+	 * @return void
+	 * @throws PlaceholderException
 	 */
 	public function setExpression(string $expression) : void {
 
 		foreach ($this->availableExpressions as $availableExpression) {
-			if (StringUtils::contains($expression, $availableExpression)) {
+			if ($availableExpression === $expression) {
 				$this->expression = $expression;
 				return;
 			}
 		}
 
-		throw new AppException('expression ' . $expression . ' is not implemented');
+		throw new PlaceholderException('expression ' . $expression . ' is not implemented');
 
 	}
 
 	/**
 	 * @param DOMDocument $domDocument
 	 * @return DOMNode
+	 * @throws DOMException
 	 */
 	public function getDOMNode(DOMDocument $domDocument) : DOMNode {
 
@@ -151,7 +142,7 @@ class ConditionPlaceholder extends ACatPlaceholder {
 	}
 
 	/**
-	 * @param string|null $prefix
+	 * @param string $prefix
 	 * @return string
 	 */
 	public function getXMLTagAsString(string $prefix = 'acat') : string {

@@ -1,6 +1,6 @@
 <?php
 
-namespace ACAT\Placeholder;
+namespace ACAT\Parser\Placeholder;
 
 use DOMDocument;
 use DOMNode;
@@ -69,15 +69,15 @@ abstract class ACatPlaceholder {
 
 	}
 
-    /**
-     * @param string $placeholderStr
-     * @return ViewPlaceholder
-     * @throws AppException
-     */
+	/**
+	 * @param string $placeholderStr
+	 * @return ViewPlaceholder
+	 * @throws PlaceholderException
+	 */
     private static function createViewPlaceHolder(string $placeholderStr) : ViewPlaceholder {
         $params = explode(':', $placeholderStr);
         if (!$params || count($params) <> 2) {
-            throw new AppException($placeholderStr . ' is malformed');
+            throw new PlaceholderException($placeholderStr . ' is malformed');
         }
         return new ViewPlaceholder($params[1]);
     }
@@ -85,12 +85,12 @@ abstract class ACatPlaceholder {
 	/**
 	 * @param string $placeholderStr
 	 * @return FieldPlaceholder
-	 * @throws AppException
+	 * @throws PlaceholderException
 	 */
 	private static function createFieldPlaceholder(string $placeholderStr) : FieldPlaceholder {
 		$params = explode(':', $placeholderStr);
 		if (!$params || count($params) <> 2) {
-			throw new AppException($placeholderStr . ' is malformed');
+			throw new PlaceholderException($placeholderStr . ' is malformed');
 		}
 		return new FieldPlaceholder($params[1]);
 	}
@@ -98,12 +98,12 @@ abstract class ACatPlaceholder {
 	/**
 	 * @param string $placeholderStr
 	 * @return TextPlaceholder
-	 * @throws AppException
+	 * @throws PlaceholderException
 	 */
 	private static function createTextPlaceholder(string $placeholderStr) : TextPlaceholder {
 		$params = explode(':', $placeholderStr);
 		if (!$params || count($params) <> 2) {
-			throw new AppException($placeholderStr . ' is malformed');
+			throw new PlaceholderException($placeholderStr . ' is malformed');
 		}
 		return new TextPlaceholder($params[1]);
 	}
@@ -111,12 +111,12 @@ abstract class ACatPlaceholder {
 	/**
 	 * @param string $placeholderStr
 	 * @return ConditionPlaceholder
-	 * @throws AppException
+	 * @throws PlaceholderException
 	 */
 	private static function createConditionPlaceholder(string $placeholderStr) : ConditionPlaceholder {
 		$params = explode(':', $placeholderStr);
 		if (count($params) != 4) {
-			throw new AppException($placeholderStr . ' is malformed');
+			throw new PlaceholderException($placeholderStr . ' is malformed');
 		}
 		return new ConditionPlaceholder($params[1], $params[3], $params[2]);
 	}
@@ -124,14 +124,14 @@ abstract class ACatPlaceholder {
 	/**
 	 * @param string $placeholderStr
 	 * @return BlockPlaceholder
-	 * @throws AppException
+	 * @throws PlaceholderException
 	 */
 	private static function createBlockPlaceholder(string $placeholderStr) : BlockPlaceholder {
 
 		$params = explode(':', $placeholderStr);
 
 		if (count($params) != 2) {
-			throw new AppException($placeholderStr . ' is malformed');
+			throw new PlaceholderException($placeholderStr . ' is malformed');
 		}
 
 		if ($params[1] == 0) {
@@ -141,7 +141,7 @@ abstract class ACatPlaceholder {
 			return new EndBlockPlaceholder();
 		}
 		else {
-			throw new AppException('block type ' . $params[1] . ' is not supported');
+			throw new PlaceholderException('block type ' . $params[1] . ' is not supported');
 		}
 
 	}

@@ -40,7 +40,7 @@ abstract class ContentPart {
     /**
      * @return DOMXPath
      */
-    public function getDomXpath(): DOMXPath {
+    public function getXPath(): DOMXPath {
 
         if (!$this->domXpath) {
             $this->domXpath = new DOMXPath($this->getDomDocument());

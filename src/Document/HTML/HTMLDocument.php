@@ -37,7 +37,7 @@ class HTMLDocument extends Document {
 	 * @return DOMXPath
 	 */
 	public function getXPath() : DOMXPath {
-		return $this->contentPart->getDomXpath();
+		return $this->contentPart->getXPath();
 	}
 
 	/**

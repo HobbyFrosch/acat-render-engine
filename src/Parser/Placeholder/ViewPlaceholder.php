@@ -1,6 +1,6 @@
 <?php
 
-namespace ACAT\Modul\Setting\Template\Model\Placeholder;
+namespace ACAT\Parser\Placeholder;
 
 use DOMDocument;
 use DOMException;
