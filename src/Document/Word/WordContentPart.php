@@ -3,6 +3,7 @@
 namespace ACAT\Document\Word;
 
 use ACAT\Document\ContentPart;
+use JetBrains\PhpStorm\Pure;
 
 /**
  *
@@ -49,6 +50,7 @@ class WordContentPart extends ContentPart {
 	 * @param string $path
 	 * @param string $content
 	 */
+	#[Pure]
 	public function __construct(string $path, string $content) {
 		$this->path = $path;
 		parent::__construct($content);
@@ -73,6 +75,13 @@ class WordContentPart extends ContentPart {
 	 */
 	public function getHierarchy(): array {
 		return $this->hierarchy;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getContent(): string {
+		return $this->getDomDocument()->saveXML();
 	}
 
 }

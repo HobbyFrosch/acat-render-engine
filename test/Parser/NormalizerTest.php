@@ -5,7 +5,15 @@ namespace Tests\Parser;
 use ACAT\Document\Word\WordContentPart;
 use ACAT\Document\Word\WordDocument;
 use ACAT\Exception\DocumentException;
+use ACAT\Exception\PlaceholderException;
+use ACAT\Parser\Normalizer;
 use ACAT\Parser\ParserConstants;
+use ACAT\Parser\Placeholder\ACatPlaceholder;
+use ACAT\Parser\Placeholder\ConditionPlaceholder;
+use ACAT\Parser\Placeholder\EndBlockPlaceholder;
+use ACAT\Parser\Placeholder\FieldPlaceholder;
+use ACAT\Parser\Placeholder\StartBlockPlaceholder;
+use ACAT\Parser\Placeholder\TextPlaceholder;
 use DOMNodeList;
 use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\PhpWord;
@@ -19,7 +27,10 @@ class NormalizerTest extends TestCase {
 
 	/**
 	 * @test
+	 *
+	 * @return void
 	 * @throws DocumentException
+	 * @throws PlaceholderException
 	 */
 	public function normalizeWordDocument() : void {
 
@@ -34,6 +45,12 @@ class NormalizerTest extends TestCase {
 		//check instance
 		$this->assertInstanceOf(WordDocument::class, $wordDocument);
 
+		//normalizer
+		$normalizer = new Normalizer();
+
+		//check instance
+		$this->assertInstanceOf(Normalizer::class, $normalizer);
+
 		//open document
 		$wordDocument->open();
 
@@ -44,22 +61,12 @@ class NormalizerTest extends TestCase {
 			$this->assertInstanceOf(WordContentPart::class, $contentPart);
 
 			//normalize the content part
-			$contentPart->normalize();
+			$normalizer->normalize($contentPart);
 
 		}
 
 		//save document
 		$wordDocument->save();
-
-		//close document
-		$wordDocument->close();
-
-		//check if document is valid
-		$phpWordDoc = IOFactory::load($currentDocument);
-		$this->assertInstanceOf(PhpWord::class, $phpWordDoc);
-
-		//reopen document
-		$wordDocument->open();
 
 		//get 'word/document.xml' ContentPart
 		$contentPart = $wordDocument->getContentParts()['word/document.xml'];
@@ -83,7 +90,8 @@ class NormalizerTest extends TestCase {
 			foreach ($matches as $match) {
 				try {
 					$aCatNodes[] = ACatPlaceholder::getPlaceholder($match[0]);
-				} catch (DocumentException $e) {
+				}
+				catch (PlaceholderException $e) {
 					$this->assertStringContainsString('C:12', $e->getMessage());
 				}
 			}

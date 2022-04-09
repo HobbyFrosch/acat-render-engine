@@ -102,7 +102,9 @@ class Normalizer {
 	 */
 	private function removePlaceHoldersFromNodeValue(array $placeHolders, string $nodeValue): string {
 		foreach ($placeHolders as $placeHolder) {
-			$nodeValue = str_replace($placeHolder[0], '', $nodeValue);
+			if(array_key_exists(0, $placeHolder)) {
+				$nodeValue = str_replace($placeHolder[0], '', $nodeValue);
+			}
 		}
 		return $nodeValue;
 	}

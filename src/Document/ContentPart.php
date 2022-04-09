@@ -45,11 +45,12 @@ abstract class ContentPart {
         if (!$this->domXpath) {
             $this->domXpath = new DOMXPath($this->getDomDocument());
             foreach ($this->getNamespaces() as $prefix => $url) {
-                $this->domXPath->registerNamespace($prefix, $url);
+                $this->domXpath->registerNamespace($prefix, $url);
             }
         }
 
         return $this->domXpath;
+
     }
 
     /**
@@ -67,13 +68,6 @@ abstract class ContentPart {
     }
 
     /**
-     * @return string
-     */
-    public function getContent(): string {
-        return $this->content;
-    }
-
-    /**
      * @param string $content
      * @return void
      */
@@ -82,6 +76,11 @@ abstract class ContentPart {
 	    $this->domDocument = new DOMDocument('1.0', 'utf-8');
 	    $this->domDocument->loadXML($this->content);
     }
+
+	/**
+	 * @return string
+	 */
+	abstract function getContent() : string;
 
     /**
      * @return array

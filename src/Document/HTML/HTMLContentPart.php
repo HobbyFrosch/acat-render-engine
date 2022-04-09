@@ -31,4 +31,10 @@ class HTMLContentPart extends ContentPart {
 		return [];
 	}
 
+	/**
+	 * @return string
+	 */
+	public function getContent(): string {
+		return $this->getDomDocument()->saveHTML();
+	}
 }
