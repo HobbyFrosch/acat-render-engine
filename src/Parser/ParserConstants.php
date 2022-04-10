@@ -35,7 +35,12 @@ class ParserConstants {
 	/**
 	 *
 	 */
-	public const TEXT_NODES = "//w:t";
+	public const WORD_TEXT_NODES = "//w:t";
+
+	/**
+	 *
+	 */
+	public const HTML_TEXT_NODES= "//text()";
 
 	/**
 	 *

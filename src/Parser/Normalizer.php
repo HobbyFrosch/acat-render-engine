@@ -3,7 +3,6 @@
 namespace ACAT\Parser;
 
 use ACAT\Document\Word\WordContentPart;
-use ACAT\Document\Word\WordDocument;
 use ACAT\Utils\StringUtils;
 use DOMNode;
 
@@ -29,7 +28,7 @@ class Normalizer {
 	public function normalize(WordContentPart $contentPart): void {
 
 		$this->contentPart = $contentPart;
-		$textNodes = $this->contentPart->getXPath()->query(ParserConstants::TEXT_NODES);
+		$textNodes = $this->contentPart->getXPath()->query(ParserConstants::WORD_TEXT_NODES);
 
 		foreach ($textNodes as $textNode) {
 			$this->processTextNode($textNode);
