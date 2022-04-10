@@ -103,7 +103,7 @@ class ConditionPlaceholder extends ACatPlaceholder {
 	public function setExpression(string $expression) : void {
 
 		foreach ($this->availableExpressions as $availableExpression) {
-			if ($availableExpression === $expression) {
+			if (str_contains($expression, $availableExpression)) {
 				$this->expression = $expression;
 				return;
 			}

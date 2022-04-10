@@ -3,6 +3,7 @@
 namespace ACAT\Document\Word;
 
 use JetBrains\PhpStorm\Pure;
+use const STR_PAD_LEFT;
 
 /**
  *
@@ -148,7 +149,7 @@ class PasswordEncoder {
 		// build low-order word and hig-order word and combine them
 		$combinedKey = self::buildCombinedKey($byteChars);
 		// build reversed hexadecimal string
-		$hex = str_pad(strtoupper(dechex($combinedKey & 0xFFFFFFFF)), 8, '0', \STR_PAD_LEFT);
+		$hex = str_pad(strtoupper(dechex($combinedKey & 0xFFFFFFFF)), 8, '0', STR_PAD_LEFT);
 		$reversedHex = $hex[6] . $hex[7] . $hex[4] . $hex[5] . $hex[2] . $hex[3] . $hex[0] . $hex[1];
 
 		$generatedKey = mb_convert_encoding($reversedHex, 'UCS-2LE', 'UTF-8');
@@ -180,6 +181,14 @@ class PasswordEncoder {
 		}
 
 		return $algorithm;
+	}
+
+	/**
+	 * @param $algorithmName
+	 * @return mixed
+	 */
+	public static function getAlgorithmId($algorithmName): mixed {
+		return self::$algorithmMapping[$algorithmName][0];
 	}
 
     /**

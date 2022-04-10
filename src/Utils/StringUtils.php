@@ -30,16 +30,13 @@ class StringUtils {
 
     }
 
-    /**
-     * @param string $haystack
-     * @param $needle
-     * @return bool
-     */
-    static function contains(string $haystack, $needle) : bool {
-        if (empty($needle) || !is_string($needle)) {
-            return false;
-        }
-        return !((stripos($haystack, $needle) === false));
+	/**
+	 * @param string $haystack
+	 * @param string $needle
+	 * @return bool
+	 */
+    static function contains(string $haystack, string $needle) : bool {
+	    return !((stripos($haystack, $needle) === false));
     }
 
     /**

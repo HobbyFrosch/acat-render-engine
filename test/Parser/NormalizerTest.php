@@ -34,10 +34,10 @@ class NormalizerTest extends TestCase {
 	 */
 	public function normalizeWordDocument() : void {
 
-		$currentDocument = __DIR__ . "/resources/normalizer_test_document_lck.docx";
+		$currentDocument = __DIR__ . "/Resources/normalizer_test_document_lck.docx";
 
 		//create a copy from original file
-		copy(__DIR__ . '/resources/normalizer_test_document.docx', $currentDocument);
+		copy(__DIR__ . '/Resources/normalizer_test_document.docx', $currentDocument);
 
 		//create new instance
 		$wordDocument = new WordDocument($currentDocument);
