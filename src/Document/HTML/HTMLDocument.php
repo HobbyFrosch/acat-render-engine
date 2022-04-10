@@ -69,4 +69,11 @@ class HTMLDocument extends Document {
 		}
 	}
 
+	/**
+	 * @return HTMLContentPart
+	 */
+	public function getContentPart(): HTMLContentPart {
+		return $this->contentPart;
+	}
+
 }

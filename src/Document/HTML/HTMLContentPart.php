@@ -17,7 +17,7 @@ class HTMLContentPart extends ContentPart {
 
 		if (!$this->domDocument) {
 			$this->domDocument = new DOMDocument('1.0', 'utf-8');
-			$this->domDocument->loadHTML($this->content);
+			$this->domDocument->loadHTML($this->content, LIBXML_NOERROR);
 		}
 
 		return $this->domDocument;
