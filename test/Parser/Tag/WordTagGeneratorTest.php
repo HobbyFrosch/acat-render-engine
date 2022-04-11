@@ -1,6 +1,6 @@
 <?php
 
-namespace ACAT\Parser\Tag;
+namespace Tests\Parser\Tag;
 
 use ACAT\Document\Word\WordContentPart;
 use ACAT\Document\Word\WordDocument;
@@ -11,6 +11,7 @@ use ACAT\Parser\Placeholder\BlockPlaceholder;
 use ACAT\Parser\Placeholder\FieldPlaceholder;
 use ACAT\Parser\Placeholder\TextPlaceholder;
 use ACAT\Parser\Placeholder\WordTextPlaceholder;
+use ACAT\Parser\Tag\WordTagGenerator;
 use DOMNodeList;
 use PHPUnit\Framework\TestCase;
 

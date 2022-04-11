@@ -1,10 +1,10 @@
 <?php
 
-namespace ACAT\Parser\Tag;
+namespace Tests\Parser\Tag;
 
 use ACAT\Document\HTML\HTMLDocument;
 use ACAT\Exception\DocumentException;
-use Normalizer;
+use ACAT\Parser\Tag\HTMLTagGenerator;
 use PHPUnit\Framework\TestCase;
 
 class HTMLTagGeneratorTest extends TestCase {
