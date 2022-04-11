@@ -3,12 +3,16 @@
 namespace ACAT\Parser\Element;
 
 use ACAT\Document\ContentPart;
+use ACAT\Exception\ElementException;
 use ACAT\Parser\ParserConstants;
+use ACAT\Utils\DOMUtils;
+use DOMNode;
+use DOMNodeList;
 
 /**
  *
  */
-abstract class Generator {
+abstract class ElementGenerator {
 
 	/**
 	 * @var ContentPart
@@ -99,7 +103,6 @@ abstract class Generator {
 
 	/**
 	 * @return array
-	 * @throws Exception
 	 */
 	public function getTextElements(): array {
 
@@ -134,8 +137,7 @@ abstract class Generator {
 	/**
 	 * @param string $nodeType
 	 * @return array
-	 * @throws AppException
-	 * @throws Exception
+	 * @throws ElementException
 	 */
 	public function getContentElements(string $nodeType = ParserConstants::ACAT_FIELD_NODE): array {
 
@@ -171,7 +173,7 @@ abstract class Generator {
 
 	/**
 	 * @return array
-	 * @throws AppException
+	 * @throws ElementException
 	 */
 	public function getFieldElements(): array {
 		return $this->getContentElements();
@@ -179,7 +181,7 @@ abstract class Generator {
 
 	/**
 	 * @return array
-	 * @throws AppException
+	 * @throws ElementException
 	 */
 	public function getViewElements(): array {
 		return $this->getContentElements(ParserConstants::ACAT_VIEW_NODE);
@@ -187,8 +189,7 @@ abstract class Generator {
 
 	/**
 	 * @return array
-	 * @throws AppException
-	 * @throws Exception
+	 * @throws ElementException
 	 */
 	public function getConditionElements(): array {
 
@@ -219,7 +220,6 @@ abstract class Generator {
 
 	/**
 	 * @return array
-	 * @throws Exception
 	 */
 	public function getBlocks(): array {
 
@@ -229,27 +229,22 @@ abstract class Generator {
 
 		foreach ($this->getStartBlockNodes() as $startNode) {
 			foreach ($this->blockTypes as $blockType) {
-				try {
-					$block = $this->getBlock($startNode, $blockType);
-					if ($block) {
-						$this->blocks[] = $block;
-						if ($block instanceof TextBlock) {
-							$this->textBlocks[] = $block;
-						}
-						else if ($block instanceof ParagraphBlock) {
-							$this->paragraphBlocks[] = $block;
-						}
-						else if ($block instanceof TableCellBlock) {
-							$this->tableCellBlocks[] = $block;
-						}
-						else if ($block instanceof TableRowBlock) {
-							$this->tableRowBlocks[] = $block;
-						}
-						break;
+				$block = $this->getBlock($startNode, $blockType);
+				if ($block) {
+					$this->blocks[] = $block;
+					if ($block instanceof TextBlock) {
+						$this->textBlocks[] = $block;
 					}
-				}
-				catch (AppException $e) {
-					Logging::getFormLogger()->warn($e);
+					else if ($block instanceof ParagraphBlock) {
+						$this->paragraphBlocks[] = $block;
+					}
+					else if ($block instanceof TableCellBlock) {
+						$this->tableCellBlocks[] = $block;
+					}
+					else if ($block instanceof TableRowBlock) {
+						$this->tableRowBlocks[] = $block;
+					}
+					break;
 				}
 			}
 		}
@@ -297,8 +292,7 @@ abstract class Generator {
 	 * @param DOMNode $contextNode
 	 * @param string $blockType
 	 * @return BlockElement|null
-	 * @throws AppException
-	 * @throws Exception
+	 * @throws ElementException
 	 */
 	private function getBlock(DOMNode $contextNode, string $blockType): ?BlockElement {
 
@@ -317,27 +311,18 @@ abstract class Generator {
 				$endBlockNode = $this->getEndBlockNode($sibling);
 				if ($endBlockNode) {
 					if ($endBlockNode->getAttribute('type') == 'end') {
-						switch ($blockType) {
-							case 'w:t':
-								$documentBlock = new TextBlock($contextNode, $endBlockNode, $this->contentPart);
-								break;
-							case 'w:p':
-								$documentBlock = new ParagraphBlock($contextNode, $endBlockNode, $this->contentPart);
-								break;
-							case 'w:tc':
-								$documentBlock = new TableCellBlock($contextNode, $endBlockNode, $this->contentPart);
-								break;
-							case 'w:tr':
-								$documentBlock = new TableRowBlock($contextNode, $endBlockNode, $this->contentPart);
-								break;
-							default:
-								throw new AppException($blockType . ' is not supported');
-						}
+						$documentBlock = match ($blockType) {
+							'w:t' => new TextBlock($contextNode, $endBlockNode),
+							'w:p' => new ParagraphBlock($contextNode, $endBlockNode),
+							'w:tc' => new TableCellBlock($contextNode, $endBlockNode),
+							'w:tr' => new TableRowBlock($contextNode, $endBlockNode),
+							default => throw new ElementException($blockType . ' is not supported'),
+						};
 						$documentBlock->setChildren($children);
 						break;
 					}
 					else {
-						throw new AppException('invalid block type');
+						throw new ElementException('invalid block type');
 					}
 				}
 				else {
@@ -361,7 +346,7 @@ abstract class Generator {
 	 * @param string $elementType
 	 * @param array $children
 	 * @return array
-	 * @throws AppException
+	 * @throws ElementException
 	 */
 	private function getElements(string $elementType, array $children): array {
 
@@ -381,7 +366,7 @@ abstract class Generator {
 				$elements = array_merge($elements, $child->getViewElements());
 			}
 			else {
-				throw new AppException('type ' . $elementType . 'is not known');
+				throw new ElementException('type ' . $elementType . 'is not known');
 			}
 		}
 

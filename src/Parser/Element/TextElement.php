@@ -4,6 +4,9 @@ namespace ACAT\Parser\Element;
 
 use ACAT\Exception\ElementException;
 
+/**
+ *
+ */
 class TextElement extends Element {
 
 	/**

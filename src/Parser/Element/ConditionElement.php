@@ -3,7 +3,6 @@
 namespace ACAT\Parser\Element;
 
 use ACAT\Exception\ElementException;
-use ACAT\Exception\PlaceholderException;
 
 /**
  *

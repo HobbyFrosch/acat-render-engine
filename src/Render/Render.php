@@ -14,7 +14,7 @@ abstract class Render {
 	 * @param DOMElement $element
 	 * @param DOMElement $wordTextNode
 	 */
-	public function appendRenderedNode(\DOMElement $element, DOMElement $wordTextNode) : void {
+	public function appendRenderedNode(DOMElement $element, DOMElement $wordTextNode) : void {
 		if (!DOMUtils::isRemoved($element)) {
 			$element->parentNode->insertBefore($wordTextNode, $element);
 		}

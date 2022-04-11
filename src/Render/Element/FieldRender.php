@@ -2,7 +2,12 @@
 
 namespace ACAT\Render\Element;
 
+use ACAT\Exception\ElementException;
+use ACAT\Exception\RenderException;
+use ACAT\Parser\Element\FieldElement;
+use ACAT\Parser\Placeholder\WordTextPlaceholder;
 use ACAT\Render\Render;
+use DOMException;
 
 /**
  *
@@ -13,6 +18,8 @@ class FieldRender extends Render {
 	 * @param FieldElement $fieldElement
 	 * @param array $values
 	 * @return void
+	 * @throws RenderException
+	 * @throws ElementException|DOMException
 	 */
 	public function renderFieldElement(FieldElement $fieldElement, array $values) {
 
@@ -29,36 +36,10 @@ class FieldRender extends Render {
 			}
 		}
 		else {
-			Logging::getFormLogger()->warn($fieldElement->getElement()->nodeName . ' does not contains a field id');
+			throw new RenderException($fieldElement->getElement()->nodeName . ' does not contains a field id');
 		}
 
 		$fieldElement->delete();
-
-	}
-
-	/**
-	 * @param string $fieldId
-	 * @param string|null $value
-	 * @return string|null
-	 * @throws Exception
-	 */
-	private function getDisplayValue(string $fieldId, ?string $value) : ?string {
-
-		if (empty($fieldId) || empty($value)) {
-			return null;
-		}
-
-		try {
-			$coreFieldModel = CoreFieldModel::getInstanceFromFieldId($fieldId);
-			if ($coreFieldModel) {
-				$value = $coreFieldModel->getUitypeInstance()->getDisplayValue($value, false, false, true);
-			}
-		}
-		catch (Exception | InvalidArgumentException | CacheException $e) {
-			Logging::getFormLogger()->warn($e);
-		}
-
-		return $value;
 
 	}
 
