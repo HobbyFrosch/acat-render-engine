@@ -29,9 +29,11 @@ abstract class Render {
 		}
 	}
 
-    /**
-     * @return void
-     */
-    abstract function render() : void;
+	/**
+	 * @param array $elements
+	 * @param array $values
+	 * @return void
+	 */
+    abstract function render(array $elements, array $values = []) : void;
 
 }

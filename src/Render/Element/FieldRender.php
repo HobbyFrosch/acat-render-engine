@@ -1,6 +1,6 @@
 <?php
 
-namespace ACAT\Render\Element;
+	namespace ACAT\Render\Element;
 
 use ACAT\Exception\ElementException;
 use ACAT\Exception\RenderException;
@@ -27,12 +27,8 @@ class FieldRender extends Render {
 
 		if ($fieldId) {
 			if (array_key_exists($fieldId, $values)) {
-
-				$displayValue = $this->getDisplayValue($fieldId, $values[$fieldId]);
-				$wordTextNode = new WordTextPlaceholder($displayValue);
-
-				$this->appendRenderedNode($fieldElement->getElement(), $wordTextNode->getDOMNode($fieldElement->getElement()->ownerDocument));
-
+				$wordTextNode = new WordTextPlaceholder($values[$fieldId]);
+				$this->appendRenderedNode($fieldElement->getElement(), $wordTextNode->getDOMNode($fieldElement->getDomDocument()));
 			}
 		}
 		else {
@@ -46,7 +42,10 @@ class FieldRender extends Render {
 	/**
 	 * @param array $elements
 	 * @param array $values
-	 * @throws AppException
+	 * @return void
+	 * @throws DOMException
+	 * @throws ElementException
+	 * @throws RenderException
 	 */
 	public function render(array $elements, array $values = []) : void {
 		foreach ($elements as $fieldElement) {

@@ -30,9 +30,10 @@ class ChildBlockElement extends Element {
 		throw new ElementException('not implemented');
 	}
 
-    /**
-     * @return array
-     */
+	/**
+	 * @return array
+	 * @throws ElementException
+	 */
     public function getViewElements() : array {
 
         $viewElements = [];
@@ -48,6 +49,7 @@ class ChildBlockElement extends Element {
 
 	/**
 	 * @return array
+	 * @throws ElementException
 	 */
 	public function getTextElements() : array {
 
@@ -64,6 +66,7 @@ class ChildBlockElement extends Element {
 
 	/**
 	 * @return array
+	 * @throws ElementException
 	 */
 	public function getFieldElements() : array {
 
@@ -80,6 +83,7 @@ class ChildBlockElement extends Element {
 
 	/**
 	 * @return array
+	 * @throws ElementException
 	 */
 	public function getConditionElements() : array {
 
@@ -110,13 +114,13 @@ class ChildBlockElement extends Element {
 			$contextNode = $this->element;
 		}
 
-		//@todo Content part ist gone
-		return $this->contentPart->getXPath()->query('.//' . $elementType, $contextNode);
+		return $this->getXpath()->query('.//' . $elementType, $contextNode);
 	}
 
 	/**
 	 * @param DOMNode|null $contextNode
 	 * @return ChildBlockElement
+	 * @throws ElementException
 	 */
 	public function getClonedChildBlockElement(DOMNode $contextNode = null) : ChildBlockElement {
 		$clonedElement = $this->element->cloneNode(true);

@@ -46,6 +46,7 @@ abstract class ElementGenerator {
 
 	/**
 	 * @param ContentPart $contentPart
+	 * @throws ElementException
 	 */
 	public function __construct(ContentPart $contentPart) {
 		$this->contentPart = $contentPart;
@@ -95,7 +96,8 @@ abstract class ElementGenerator {
 	}
 
 	/**
-	 * @throws Exception
+	 * @return void
+	 * @throws ElementException
 	 */
 	public function generateElements(): void {
 		$this->blocks = $this->getBlocks();
@@ -103,6 +105,7 @@ abstract class ElementGenerator {
 
 	/**
 	 * @return array
+	 * @throws ElementException
 	 */
 	public function getTextElements(): array {
 
@@ -123,7 +126,7 @@ abstract class ElementGenerator {
 				}
 			}
 			if (!$found) {
-				$textElements[] = new TextElement($node, $this->contentPart);
+				$textElements[] = new TextElement($node);
 			}
 			else {
 				$found = false;
@@ -148,10 +151,10 @@ abstract class ElementGenerator {
 
 		foreach ($nodes as $node) {
 			if ($nodeType === ParserConstants::ACAT_VIEW_NODE) {
-				$fieldElement = new ViewElement($node, $this->contentPart);
+				$fieldElement = new ViewElement($node);
 			}
 			else {
-				$fieldElement = new FieldElement($node, $this->contentPart);
+				$fieldElement = new FieldElement($node);
 			}
 			foreach ($this->getBlocks() as $block) {
 				if (in_array($fieldElement->getId(), $block->getElementIds())) {
@@ -199,7 +202,7 @@ abstract class ElementGenerator {
 		$nodes = $this->getContentPart()->getXPath()->query('//' . ParserConstants::ACAT_CONDITION_NODE);
 
 		foreach ($nodes as $node) {
-			$conditionElement = new ConditionElement($node, $this->contentPart);
+			$conditionElement = new ConditionElement($node);
 			foreach ($this->getBlocks() as $block) {
 				if (in_array($conditionElement->getId(), $block->getElementIds())) {
 					$found = true;
@@ -220,6 +223,7 @@ abstract class ElementGenerator {
 
 	/**
 	 * @return array
+	 * @throws ElementException
 	 */
 	public function getBlocks(): array {
 
@@ -256,7 +260,7 @@ abstract class ElementGenerator {
 	/**
 	 * @return DOMNodeList
 	 */
-	private function getStartBlockNodes(): DOMNodeList {
+	protected function getStartBlockNodes(): DOMNodeList {
 		return $this->contentPart->getXPath()->query("//acat:block[@type='start']");
 	}
 
@@ -264,7 +268,7 @@ abstract class ElementGenerator {
 	 * @param DOMNode $contextNode
 	 * @return DOMNode|null
 	 */
-	private function getEndBlockNode(DOMNode $contextNode): ?DOMNode {
+	protected function getEndBlockNode(DOMNode $contextNode): ?DOMNode {
 
 		if ($contextNode->nodeName == 'acat:block') {
 			return $contextNode;
@@ -284,7 +288,7 @@ abstract class ElementGenerator {
 	 * @param DOMNode $contextNode
 	 * @return DOMNodeList
 	 */
-	private function getSiblings(DOMNode $contextNode): DOMNodeList {
+	protected function getSiblings(DOMNode $contextNode): DOMNodeList {
 		return $this->contentPart->getXPath()->query("following-sibling::*", $contextNode);
 	}
 
@@ -294,7 +298,7 @@ abstract class ElementGenerator {
 	 * @return BlockElement|null
 	 * @throws ElementException
 	 */
-	private function getBlock(DOMNode $contextNode, string $blockType): ?BlockElement {
+	protected function getBlock(DOMNode $contextNode, string $blockType): ?BlockElement {
 
 		$children = [];
 		$documentBlock = null;
@@ -326,7 +330,7 @@ abstract class ElementGenerator {
 					}
 				}
 				else {
-					$children[] = new ChildBlockElement($sibling, $this->contentPart);
+					$children[] = new ChildBlockElement($sibling);
 				}
 			}
 		}
@@ -348,7 +352,7 @@ abstract class ElementGenerator {
 	 * @return array
 	 * @throws ElementException
 	 */
-	private function getElements(string $elementType, array $children): array {
+	protected function getElements(string $elementType, array $children): array {
 
 		$elements = [];
 

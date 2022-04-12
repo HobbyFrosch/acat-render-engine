@@ -3,6 +3,8 @@
 namespace Tests\Parser\Render;
 
 use ACAT\Document\Word\WordContentPart;
+use ACAT\Exception\ElementException;
+use ACAT\Parser\Element\WordElementGenerator;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -11,9 +13,11 @@ use PHPUnit\Framework\TestCase;
 class AbstractRenderTest extends TestCase {
 
 	/**
+	 * @test
+	 *
 	 * @return WordContentPart
 	 */
-	protected function getWordContentPart() : WordContentPart {
+	public function getWordContentPart() : WordContentPart {
 
 		$testXMLFile = __DIR__ . '/Resources/document.xml';
 
@@ -40,5 +44,13 @@ class AbstractRenderTest extends TestCase {
 
 	}
 
+	/**
+	 * @return WordElementGenerator
+	 * @throws ElementException
+	 */
+	public function getWordElementGenerator() : WordElementGenerator {
+		$wordContentPart = $this->getWordContentPart();
+		return new WordElementGenerator($wordContentPart);
+	}
 
 }

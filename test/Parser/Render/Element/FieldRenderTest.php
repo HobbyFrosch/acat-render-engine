@@ -30,20 +30,23 @@ class FieldRenderTest extends AbstractRenderTest {
 	 * @test
 	 *
 	 * @return void
+	 * @throws DOMException
+	 * @throws ElementException
+	 * @throws RenderException
 	 */
 	public function fieldsCanBeRendered(): void {
 
 		$values = $this->getValues();
-		$contentPart = $this->getWordContentPart();
+		$elementGenerator = $this->getWordElementGenerator();
 
 		$fieldRender = new FieldRender();
 		$this->assertInstanceOf(FieldRender::class, $fieldRender);
 
-		$fieldRender->render($contentPart->getFieldElements(), $values);
-		$acatFieldNodes = $contentPart->getXPath()->query('//' . ParserConstants::ACAT_FIELD_NODE);
+		$fieldRender->render($elementGenerator->getFieldElements(), $values);
+		$acatFieldNodes = $elementGenerator->getContentPart()->getXPath()->query('//' . ParserConstants::ACAT_FIELD_NODE);
 
 		$this->assertInstanceOf(DOMNodeList::class, $acatFieldNodes);
-		$this->assertEquals(10, $acatFieldNodes->length);
+		$this->assertEquals(9, $acatFieldNodes->length);
 
 	}
 
@@ -58,20 +61,20 @@ class FieldRenderTest extends AbstractRenderTest {
 	public function aFieldCanBeRendered(): void {
 
 		$values = $this->getValues();
-		$contentPart = $this->getWordContentPart();
+		$elementGenerator = $this->getWordElementGenerator();
 
 		$fieldRender = new FieldRender();
 		$this->assertInstanceOf(FieldRender::class, $fieldRender);
 
-		$fieldNodes = $contentPart->getXPath()->query('//' . ParserConstants::ACAT_FIELD_NODE);
+		$fieldNodes = $elementGenerator->getContentPart()->getXPath()->query('//' . ParserConstants::ACAT_FIELD_NODE);
 		$this->assertInstanceOf(DOMNodeList::class, $fieldNodes);
 		$this->assertEquals(29, $fieldNodes->length);
 
 		foreach ($fieldNodes as $fieldNode) {
-			$fieldRender->renderFieldElement(new FieldElement($fieldNode, $contentPart), $values);
+			$fieldRender->renderFieldElement(new FieldElement($fieldNode), $values);
 		}
 
-		$fieldNodes = $contentPart->getXPath()->query('//' . ParserConstants::ACAT_FIELD_NODE);
+		$fieldNodes = $elementGenerator->getContentPart()->getXPath()->query('//' . ParserConstants::ACAT_FIELD_NODE);
 		$this->assertInstanceOf(DOMNodeList::class, $fieldNodes);
 		$this->assertEquals(0, $fieldNodes->length);
 

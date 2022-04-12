@@ -3,8 +3,11 @@
 namespace ACAT\Parser\Element;
 
 use ACAT\Exception\ElementException;
+use ACAT\Parser\ParserConstants;
 use ACAT\Utils\DOMUtils;
+use DOMDocument;
 use DOMElement;
+use DOMXPath;
 
 /**
  *
@@ -17,6 +20,16 @@ abstract class Element {
 	protected bool $blockElement;
 
 	/**
+	 * @var DOMDocument
+	 */
+	protected DOMDocument $domDocument;
+
+	/**
+	 * @var DOMXPath|null
+	 */
+	protected ?DOMXPath $domXPath = null;
+
+	/**
 	 * @var DOMElement
 	 */
 	protected DOMElement $element;
@@ -24,10 +37,18 @@ abstract class Element {
 	/**
 	 * @param DOMElement $element
 	 * @param bool $blockElement
+	 * @throws ElementException
 	 */
 	public function __construct(DOMElement $element, bool $blockElement = false) {
+
 		$this->element = $element;
 		$this->blockElement = $blockElement;
+
+		if (!$element->ownerDocument) {
+			throw new ElementException("node doesn't have a owner document");
+		}
+
+		$this->domDocument = $element->ownerDocument;
 	}
 
 	/**
@@ -35,6 +56,26 @@ abstract class Element {
 	 */
 	public function getElement() : DOMElement {
 		return $this->element;
+	}
+
+	/**
+	 * @return DOMDocument|null
+	 */
+	public function getDomDocument(): ?DOMDocument {
+		return $this->domDocument;
+	}
+
+	/**
+	 * @return DOMXPath
+	 */
+	public function getXpath() : DOMXPath {
+		if (!$this->domXPath) {
+			$this->domXPath = new DOMXPath($this->domDocument);
+			foreach (ParserConstants::$wordNamespaces as $prefix => $url) {
+				$this->getXpath()->registerNamespace($prefix, $url);
+			}
+		}
+		return $this->domXPath;
 	}
 
 	/**

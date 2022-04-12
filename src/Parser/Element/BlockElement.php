@@ -125,6 +125,7 @@ abstract class BlockElement {
                     $this->fieldIds['views'][] = $viewElement->getFieldId();
                 }
 			}
+			//@todo logging or throwing?
             catch (ElementException $e) {
 				//Logging::getFormLogger()->warn($e);
 			}

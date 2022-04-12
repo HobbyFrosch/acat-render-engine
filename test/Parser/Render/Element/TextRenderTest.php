@@ -1,36 +1,22 @@
 <?php
-/*
- * Copyright (c) 2020 - Akademie für Weiterbildung der Universtät Bremen
- *
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
- * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
- * All Rights eserved.
- * reviewed and modified by Akademie für Weiterbildung der Universtät Bremen
- */
 
-namespace Test\Template\Model\Document\Render;
+namespace Tests\Parser\Render\Element;
 
-use ACAT\App\Exception\AppException;
-use ACAT\Modul\Setting\Template\Model\Document\ContentPart;
-use ACAT\Modul\Setting\Template\Model\Document\Element\TextElement;
-use ACAT\Modul\Setting\Template\Model\Parser\ParserConstants;
-use ACAT\Modul\Setting\Template\Model\Render\TextRender;
+use ACAT\Exception\ElementException;
+use ACAT\Exception\RenderException;
+use ACAT\Parser\Element\TextElement;
+use ACAT\Parser\ParserConstants;
+use ACAT\Render\Element\TextRender;
+use DOMException;
 use DOMNodeList;
-use Exception;
-use PHPUnit\Framework\TestCase;
+use Tests\Parser\Render\AbstractRenderTest;
 
-/**
- * Class TextRenderTest
- * @package Test\Template\Model\Document\Render
- */
-class TextRenderTest extends TestCase {
+class TextRenderTest extends AbstractRenderTest {
 
 	/**
-	 * @covers \ACAT\Modul\Setting\Template\Model\Render\TextRender::__construct
 	 * @test
+	 *
+	 * @return void
 	 */
 	public function aTextRenderCanBeCreated() : void {
 		$textRender = new TextRender();
@@ -39,20 +25,20 @@ class TextRenderTest extends TestCase {
 
 	/**
 	 * @test
-	 * @covers \ACAT\Modul\Setting\Template\Model\Render\TextRender::render
-	 * @throws AppException
-	 * @throws Exception
+	 *
+	 * @return void
+	 * @throws ElementException|RenderException
 	 */
 	public function textFieldsCanBeRendered() : void {
 
-		$contentPart = $this->getContentPart();
+		$wordElementGenerator = $this->getWordElementGenerator();
 
 		$textRender = new TextRender();
 		$this->assertInstanceOf(TextRender::class, $textRender);
 
-		$textRender->render($contentPart->getTextElements());
+		$textRender->render($wordElementGenerator->getTextElements());
 
-		$acatTextNodes = $contentPart->getXPath()->query('//' . ParserConstants::ACAT_TEXT_NODES);
+		$acatTextNodes = $wordElementGenerator->getContentPart()->getXPath()->query('//' . ParserConstants::ACAT_TEXT_NODES);
 		$this->assertInstanceOf(DOMNodeList::class, $acatTextNodes);
 		$this->assertEquals(0, $acatTextNodes->length);
 
@@ -60,46 +46,28 @@ class TextRenderTest extends TestCase {
 
 	/**
 	 * @test
-	 * @covers \ACAT\Modul\Setting\Template\Model\Render\TextRender::renderTextField
-	 * @throws AppException
-	 * @throws Exception
+	 *
+	 * @return void
+	 * @throws ElementException|DOMException
 	 */
 	public function aFieldCanBeRendered() : void {
 
-		$contentPart = $this->getContentPart();
+		$wordElementGenerator = $this->getWordElementGenerator();
 
 		$textRender = new TextRender();
 		$this->assertInstanceOf(TextRender::class, $textRender);
 
-		$textNodes = $contentPart->getXPath()->query('//' . ParserConstants::ACAT_TEXT_NODES);
+		$textNodes = $wordElementGenerator->getContentPart()->getXPath()->query('//' . ParserConstants::ACAT_TEXT_NODES);
 		$this->assertInstanceOf(DOMNodeList::class, $textNodes);
 		$this->assertEquals(2, $textNodes->length);
 
 		foreach ($textNodes as $textNode) {
-			$textRender->renderTextElement(new TextElement($textNode, $contentPart));
+			$textRender->renderTextElement(new TextElement($textNode));
 		}
 
-		$textNodes = $contentPart->getXPath()->query('//' . ParserConstants::ACAT_TEXT_NODES);
+		$textNodes = $wordElementGenerator->getContentPart()->getXPath()->query('//' . ParserConstants::ACAT_TEXT_NODES);
 		$this->assertInstanceOf(DOMNodeList::class, $textNodes);
 		$this->assertEquals(0, $textNodes->length);
-
-	}
-
-	/**
-	 * @return ContentPart
-	 * @throws AppException
-	 */
-	private function getContentPart () : ContentPart {
-
-		$testXMLFile = __DIR__ . '/resources/document.xml';
-
-		$xmlContent = file_get_contents($testXMLFile);
-		$this->assertIsString($xmlContent);
-
-		$contentPart = new ContentPart($testXMLFile, $xmlContent);
-		$this->assertInstanceOf(ContentPart::class, $contentPart);
-
-		return $contentPart;
 
 	}
 

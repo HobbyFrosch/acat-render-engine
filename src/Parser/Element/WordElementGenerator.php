@@ -5,7 +5,7 @@ namespace ACAT\Parser\Element;
 /**
  *
  */
-class WordElementElementGenerator extends ElementGenerator {
+class WordElementGenerator extends ElementGenerator {
 
 	/**
 	 * @var array|string[]
