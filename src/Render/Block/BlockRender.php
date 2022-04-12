@@ -2,18 +2,20 @@
 
 namespace ACAT\Render\Block;
 
+use ACAT\Exception\ConditionParserException;
+use ACAT\Exception\ElementException;
 use ACAT\Exception\RenderException;
-use ACAT\Modul\Setting\Template\Model\Render\ConditionRender;
-use ACAT\Modul\Setting\Template\Model\Render\ViewElementRender;
 use ACAT\Parser\Element\BlockElement;
 use ACAT\Parser\Element\ParagraphBlock;
 use ACAT\Parser\Element\TableCellBlock;
 use ACAT\Parser\Element\TableRowBlock;
 use ACAT\Parser\Element\TextBlock;
+use ACAT\Render\Condition\ConditionRender;
 use ACAT\Render\Element\FieldRender;
 use ACAT\Render\Element\TextRender;
+use ACAT\Render\Element\ViewElementRender;
 use ACAT\Render\Render;
-use Exception;
+use DOMException;
 
 /**
  *
@@ -57,9 +59,11 @@ class BlockRender extends Render {
     }
 
 	/**
-	 * @throws AppException
-	 * @throws Exception
-	 * @throws Exception
+	 * @return void
+	 * @throws DOMException
+	 * @throws ElementException
+	 * @throws RenderException
+	 * @throws ConditionParserException
 	 */
     private function renderBlock(): void {
 
@@ -112,8 +116,10 @@ class BlockRender extends Render {
 	 * @param array $elements
 	 * @param array $values
 	 * @return void
+	 * @throws ConditionParserException
+	 * @throws DOMException
+	 * @throws ElementException
 	 * @throws RenderException
-	 * @throws Exception
 	 */
     public function render(array $elements, array $values = []): void {
 

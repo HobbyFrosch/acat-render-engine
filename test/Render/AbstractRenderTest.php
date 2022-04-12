@@ -70,4 +70,12 @@ class AbstractRenderTest extends TestCase {
 
 	}
 
+	/**
+	 * @return WordElementGenerator
+	 * @throws ElementException
+	 */
+	public function getWordParagraphElementGenerator() : WordElementGenerator {
+		return new WordElementGenerator($this->getParagraphBlockContentPart());
+	}
+
 }

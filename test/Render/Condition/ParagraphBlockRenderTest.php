@@ -3,21 +3,29 @@
 
 namespace Tests\Render\Condition;
 
+use ACAT\Exception\ElementException;
+use ACAT\Exception\RenderException;
+use ACAT\Parser\Element\ParagraphBlock;
+use ACAT\Render\Block\ParagraphBlockRender;
+use ACAT\Utils\StringUtils;
 use JetBrains\PhpStorm\ArrayShape;
+use Tests\Render\AbstractRenderTest;
 
 /**
  *
  */
-class ParagraphBlockRenderTest extends TestCase {
+class ParagraphBlockRenderTest extends AbstractRenderTest {
 
 	/**
 	 * @test
-	 * @throws AppException
-	 * @throws Exception
+	 *
+	 * @return void
+	 * @throws ElementException
 	 */
 	public function aParagraphBlockRenderCanBeCreated(): void {
 
-		$blockElements = $this->getContentPart()->getBlockElements();
+		$wordElementPElementGenerator = $this->getWordParagraphElementGenerator();
+		$blockElements = $wordElementPElementGenerator->getBlocks();
 
 		$this->assertCount(1, $blockElements);
 		$this->assertInstanceOf(ParagraphBlock::class, $blockElements[0]);
@@ -29,13 +37,15 @@ class ParagraphBlockRenderTest extends TestCase {
 
 	/**
 	 * @test
-	 * @throws AppException
-	 * @throws Exception
+	 *
+	 * @return void
+	 * @throws ElementException
+	 * @throws RenderException
 	 */
 	public function renderParagraphBlock(): void {
 
-		$contentPart = $this->getContentPart();
-		$blockElements = $contentPart->getBlockElements();
+		$wordElementPElementGenerator = $this->getWordParagraphElementGenerator();
+		$blockElements = $wordElementPElementGenerator->getBlocks();
 
 		$this->assertCount(1, $blockElements);
 		$this->assertInstanceOf(ParagraphBlock::class, $blockElements[0]);
@@ -43,32 +53,33 @@ class ParagraphBlockRenderTest extends TestCase {
 		$paragraphBlockRender = new ParagraphBlockRender($blockElements[0], []);
 		$this->assertInstanceOf(ParagraphBlockRender::class, $paragraphBlockRender);
 
-		$paragraphBlockRender->render($blockElements, $this->getValues());
+		$paragraphBlockRender->render($blockElements, $this->getBlockValues());
 
 		/* must not exist */
-		$startParagraph = $contentPart->getXPath()->query('//w:p[@id="start"]');
+		$startParagraph = $wordElementPElementGenerator->getContentPart()->getXPath()->query('//w:p[@id="start"]');
 		$this->assertEquals(0, $startParagraph->length);
 
 		/* must not exist */
-		$endParagraph = $contentPart->getXPath()->query('//w:p[@id="end"]');
+		$endParagraph = $wordElementPElementGenerator->getContentPart()->getXPath()->query('//w:p[@id="end"]');
 		$this->assertEquals(0, $endParagraph->length);
 
 		/* there must be exactly 22 */
-		$endBlock = $contentPart->getXPath()->query('//w:p[@type="content"]');
+		$endBlock = $wordElementPElementGenerator->getContentPart()->getXPath()->query('//w:p[@type="content"]');
 		$this->assertEquals(22, $endBlock->length);
 
 	}
 
 	/**
-	 * @test
-	 * @throws AppException
-	 * @throws Exception
+	 * @return void
+	 * @throws ElementException
+	 * @throws RenderException
 	 */
 	public function renderParagraphBlockInCorrectSequence(): void {
 
-		$values = $this->getValues();
-		$contentPart = $this->getContentPart();
-		$blockElements = $contentPart->getBlockElements();
+		$values = $this->getBlockValues();
+
+		$wordElementPElementGenerator = $this->getWordParagraphElementGenerator();
+		$blockElements = $wordElementPElementGenerator->getBlocks();
 
 		$this->assertCount(1, $blockElements);
 		$this->assertInstanceOf(ParagraphBlock::class, $blockElements[0]);
@@ -76,10 +87,10 @@ class ParagraphBlockRenderTest extends TestCase {
 		$paragraphBlockRender = new ParagraphBlockRender($blockElements[0], []);
 		$this->assertInstanceOf(ParagraphBlockRender::class, $paragraphBlockRender);
 
-		$paragraphBlockRender->render($blockElements, $this->getValues());
+		$paragraphBlockRender->render($blockElements, $this->getBlockValues());
 
 		/* there must be exactly 22 */
-		$contentElements = $contentPart->getXPath()->query('//w:p[@type="content"]');
+		$contentElements = $wordElementPElementGenerator->getContentPart()->getXPath()->query('//w:p[@type="content"]');
 		$this->assertEquals(22, $contentElements->length);
 
 		/* check correct sequence */
@@ -93,7 +104,7 @@ class ParagraphBlockRenderTest extends TestCase {
 	 * @return array
 	 */
 	#[ArrayShape(['fields' => "array", 'blocks' => "\array[][]"])]
-	private function getValues(): array {
+	private function getBlockValues(): array {
 		return [
 			'fields' =>
 				[
@@ -133,138 +144,141 @@ class ParagraphBlockRenderTest extends TestCase {
 				[
 					0 =>
 						[
-							0  =>
+							'fields' =>
 								[
-									'rechnung_id' => 2796,
-									1787          => 2250,
-									1786          => '2020-04-01',
-								],
-							1  =>
-								[
-									'rechnung_id' => 2796,
-									1787          => 2250,
-									1786          => '2020-05-01',
-								],
-							2  =>
-								[
-									'rechnung_id' => 2796,
-									1787          => 2250,
-									1786          => '2020-06-01',
-								],
-							3  =>
-								[
-									'rechnung_id' => 2796,
-									1787          => 2250,
-									1786          => '2020-07-01',
-								],
-							4  =>
-								[
-									'rechnung_id' => 2796,
-									1787          => 2250,
-									1786          => '2020-08-01',
-								],
-							5  =>
-								[
-									'rechnung_id' => 2796,
-									1787          => 2250,
-									1786          => '2020-09-01',
-								],
-							6  =>
-								[
-									'rechnung_id' => 2796,
-									1787          => 2250,
-									1786          => '2020-10-01',
-								],
-							7  =>
-								[
-									'rechnung_id' => 2796,
-									1787          => 2250,
-									1786          => '2020-11-01',
-								],
-							8  =>
-								[
-									'rechnung_id' => 2796,
-									1787          => 2250,
-									1786          => '2020-12-01',
-								],
-							9  =>
-								[
-									'rechnung_id' => 2796,
-									1787          => 2250,
-									1786          => '2021-01-01',
-								],
-							10 =>
-								[
-									'rechnung_id' => 2796,
-									1787          => 2250,
-									1786          => '2021-02-01',
-								],
-							11 =>
-								[
-									'rechnung_id' => 2796,
-									1787          => 2250,
-									1786          => '2021-03-01',
-								],
-							12 =>
-								[
-									'rechnung_id' => 2796,
-									1787          => 2250,
-									1786          => '2021-04-01',
-								],
-							13 =>
-								[
-									'rechnung_id' => 2796,
-									1787          => 2250,
-									1786          => '2021-05-01',
-								],
-							14 =>
-								[
-									'rechnung_id' => 2796,
-									1787          => 2250,
-									1786          => '2021-06-01',
-								],
-							15 =>
-								[
-									'rechnung_id' => 2796,
-									1787          => 2250,
-									1786          => '2021-07-01',
-								],
-							16 =>
-								[
-									'rechnung_id' => 2796,
-									1787          => 2250,
-									1786          => '2021-08-01',
-								],
-							17 =>
-								[
-									'rechnung_id' => 2796,
-									1787          => 2250,
-									1786          => '2021-09-01',
-								],
-							18 =>
-								[
-									'rechnung_id' => 2796,
-									1787          => 2250,
-									1786          => '2021-10-01',
-								],
-							19 =>
-								[
-									'rechnung_id' => 2796,
-									1787          => 2250,
-									1786          => '2021-11-01',
-								],
-							20 =>
-								[
-									'rechnung_id' => 2796,
-									1787          => 2250,
-									1786          => '2021-12-01',
-								],
-							21 =>
-								[
-									'rechnung_id' => 2796,
-									1787          => 2250,
-									1786          => '2022-01-01',
-								],
+									0  =>
+										[
+											'rechnung_id' => 2796,
+											1787          => 2250,
+											1786          => '2020-04-01',
+										],
+									1  =>
+										[
+											'rechnung_id' => 2796,
+											1787          => 2250,
+											1786          => '2020-05-01',
+										],
+									2  =>
+										[
+											'rechnung_id' => 2796,
+											1787          => 2250,
+											1786          => '2020-06-01',
+										],
+									3  =>
+										[
+											'rechnung_id' => 2796,
+											1787          => 2250,
+											1786          => '2020-07-01',
+										],
+									4  =>
+										[
+											'rechnung_id' => 2796,
+											1787          => 2250,
+											1786          => '2020-08-01',
+										],
+									5  =>
+										[
+											'rechnung_id' => 2796,
+											1787          => 2250,
+											1786          => '2020-09-01',
+										],
+									6  =>
+										[
+											'rechnung_id' => 2796,
+											1787          => 2250,
+											1786          => '2020-10-01',
+										],
+									7  =>
+										[
+											'rechnung_id' => 2796,
+											1787          => 2250,
+											1786          => '2020-11-01',
+										],
+									8  =>
+										[
+											'rechnung_id' => 2796,
+											1787          => 2250,
+											1786          => '2020-12-01',
+										],
+									9  =>
+										[
+											'rechnung_id' => 2796,
+											1787          => 2250,
+											1786          => '2021-01-01',
+										],
+									10 =>
+										[
+											'rechnung_id' => 2796,
+											1787          => 2250,
+											1786          => '2021-02-01',
+										],
+									11 =>
+										[
+											'rechnung_id' => 2796,
+											1787          => 2250,
+											1786          => '2021-03-01',
+										],
+									12 =>
+										[
+											'rechnung_id' => 2796,
+											1787          => 2250,
+											1786          => '2021-04-01',
+										],
+									13 =>
+										[
+											'rechnung_id' => 2796,
+											1787          => 2250,
+											1786          => '2021-05-01',
+										],
+									14 =>
+										[
+											'rechnung_id' => 2796,
+											1787          => 2250,
+											1786          => '2021-06-01',
+										],
+									15 =>
+										[
+											'rechnung_id' => 2796,
+											1787          => 2250,
+											1786          => '2021-07-01',
+										],
+									16 =>
+										[
+											'rechnung_id' => 2796,
+											1787          => 2250,
+											1786          => '2021-08-01',
+										],
+									17 =>
+										[
+											'rechnung_id' => 2796,
+											1787          => 2250,
+											1786          => '2021-09-01',
+										],
+									18 =>
+										[
+											'rechnung_id' => 2796,
+											1787          => 2250,
+											1786          => '2021-10-01',
+										],
+									19 =>
+										[
+											'rechnung_id' => 2796,
+											1787          => 2250,
+											1786          => '2021-11-01',
+										],
+									20 =>
+										[
+											'rechnung_id' => 2796,
+											1787          => 2250,
+											1786          => '2021-12-01',
+										],
+									21 =>
+										[
+											'rechnung_id' => 2796,
+											1787          => 2250,
+											1786          => '2022-01-01',
+										],
+								]
 						],
 				],
 		];
