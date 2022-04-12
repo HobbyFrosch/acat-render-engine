@@ -4,7 +4,8 @@ namespace Tests\Render;
 
 use ACAT\Document\Word\WordContentPart;
 use ACAT\Exception\ElementException;
-use ACAT\Parser\Element\WordElementGenerator;
+use ACAT\Parser\Element\ElementGenerator;
+use ACAT\Parser\Element\Word\WordElementGenerator;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -50,7 +51,7 @@ class AbstractRenderTest extends TestCase {
 	 */
 	public function getWordElementGenerator(): WordElementGenerator {
 		$wordContentPart = $this->getWordContentPart();
-		return new WordElementGenerator($wordContentPart);
+		return ElementGenerator::getInstance($wordContentPart);
 	}
 
 	/**
@@ -75,7 +76,7 @@ class AbstractRenderTest extends TestCase {
 	 * @throws ElementException
 	 */
 	public function getWordParagraphElementGenerator() : WordElementGenerator {
-		return new WordElementGenerator($this->getParagraphBlockContentPart());
+		return ElementGenerator::getInstance($this->getParagraphBlockContentPart());
 	}
 
 	/**
@@ -100,7 +101,7 @@ class AbstractRenderTest extends TestCase {
 	 * @throws ElementException
 	 */
 	public function getWordTableRowElementGenerator() : WordElementGenerator {
-		return new WordElementGenerator($this->getTableRowBlockContentPart());
+		return ElementGenerator::getInstance($this->getTableRowBlockContentPart());
 	}
 
 	/**
@@ -125,7 +126,7 @@ class AbstractRenderTest extends TestCase {
 	 * @throws ElementException
 	 */
 	public function getConditionElementGenerator() : WordElementGenerator {
-		return new WordElementGenerator($this->getConditionContentPart());
+		return ElementGenerator::getInstance($this->getConditionContentPart());
 	}
 
 }

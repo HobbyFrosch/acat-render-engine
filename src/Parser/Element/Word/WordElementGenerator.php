@@ -1,6 +1,8 @@
 <?php
 
-namespace ACAT\Parser\Element;
+namespace ACAT\Parser\Element\Word;
+
+use ACAT\Parser\Element\ElementGenerator;
 
 /**
  *

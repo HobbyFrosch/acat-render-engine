@@ -5,12 +5,22 @@ namespace ACAT\Render;
 
 use ACAT\Document\ContentPart;
 use ACAT\Document\Document;
+use ACAT\Document\Word\WordDocument;
+use ACAT\Exception\ConditionParserException;
+use ACAT\Exception\DocumentException;
+use ACAT\Exception\ElementException;
 use ACAT\Exception\RenderException;
+use ACAT\Exception\TagGeneratorException;
 use ACAT\Parser\Element\ElementGenerator;
 use ACAT\Parser\Normalizer;
 use ACAT\Parser\Tag\TagGenerator;
-use ACAT\Parser\Tag\WordTagGenerator;
+use ACAT\Render\Block\BlockRender;
+use ACAT\Render\Condition\ConditionRender;
 use ACAT\Render\Element\FieldRender;
+use ACAT\Render\Element\TextRender;
+use ACAT\Render\Element\ViewElementRender;
+use DOMException;
+use JetBrains\PhpStorm\Pure;
 
 /**
  *
@@ -18,9 +28,9 @@ use ACAT\Render\Element\FieldRender;
 class RenderEngine {
 
 	/**
-	 * @var Document|null
+	 * @var WordDocument|null
 	 */
-	private ?Document $document;
+	private ?WordDocument $wordDocument;
 
 	/**
 	 * @var array
@@ -33,137 +43,77 @@ class RenderEngine {
 	private Normalizer $normalizer;
 
 	/**
-	 * @var TagGenerator
-	 */
-	private TagGenerator $tagGenerator;
-
-	/**
 	 * @var ElementGenerator
 	 */
 	private ElementGenerator $elementGenerator;
 
 	/**
-	 * @param Document|null $document
+	 * @param WordDocument|null $wordDocument
 	 */
-	public function __construct(Document $document = null) {
+	#[Pure]
+	public function __construct(WordDocument $wordDocument = null, $values = []) {
 
-		$this->document = $document;
-
+		$this->wordDocument = $wordDocument;
 		$this->normalizer = new Normalizer();
-		$this->tagGenerator = new WordTagGenerator();
+
+		if ($values) {
+			$this->values = $values;
+		}
+
 	}
 
 	/**
 	 * @param ContentPart $contentPart
 	 * @return void
+	 * @throws ConditionParserException
+	 * @throws DOMException
+	 * @throws ElementException
+	 * @throws RenderException
+	 * @throws TagGeneratorException
 	 */
 	public function renderContentPart(ContentPart $contentPart) : void {
 
-	}
+		$this->normalizer->normalize($contentPart);
 
-	/**
-	 * @param string|null $pkValue
-	 * @throws AppException
-	 * @throws CacheException
-	 * @throws DatabaseException
-	 * @throws InvalidArgumentException
-	 * @throws Exception
-	 */
-	public function render(?string $pkValue = null) : void {
+		$tagGenerator = TagGenerator::getInstance($contentPart);
+		$tagGenerator->generateTags();
 
-		$this->getValues($pkValue);
-		
+		$this->elementGenerator = ElementGenerator::getInstance($contentPart);
+
 		$this->renderConditionElements();
 		$this->renderFieldElements();
 		$this->renderTextElements();
-        $this->renderViewElements();
+		$this->renderViewElements();;
 
-		$this->renderBlocks();
+		$this->renderBlocks();;
 
 	}
 
 	/**
-	 * @param String|null $pkValue
-	 * @throws AppException
-	 * @throws CacheException
-	 * @throws DatabaseException
-	 * @throws InvalidArgumentException
-	 * @throws Exception
+	 * @return void
+	 * @throws ConditionParserException
+	 * @throws DOMException
+	 * @throws DocumentException
+	 * @throws ElementException
+	 * @throws RenderException
+	 * @throws TagGeneratorException
 	 */
-	private function getValues(?string $pkValue) : void {
-
-		$adb = PDODatabase::getInstance();
-		$queries = $this->contentPart->getQuery($this->templateModel);
-
-		if ($pkValue) {
-		    $params[] = $pkValue;
-        }
-		else {
-		    $params = [];
-        }
-
-        if (!empty($queries['views'])) {
-            foreach ($queries['views'] as $viewId => $viewQuery) {
-                $this->values['views'][$viewId] = $adb->query($viewQuery, $params)->getResultSet();
-              }
-        }
-
-		if (!empty($queries['fields'])) {
-			$fieldResults = $adb->pquery($queries['fields']['query'], $params, true);
-			if ($fieldResults->hasResultSet()) {
-				$this->values['fields'] = $fieldResults->getResultSet()[0];
-			}
+	public function render() : void {
+		foreach ($this->wordDocument->getContentParts() as $contentPart) {
+			$this->renderContentPart($contentPart);
 		}
-
-		if (!empty($queries['blocks'])) {
-			foreach ($queries['blocks'] as $key => $blockQuery) {
-                if (array_key_exists('fields', $blockQuery)) {
-                    $blockResult = $adb->pquery($blockQuery['fields']['query'], $params, true);
-                    foreach ($blockResult->getResultSet() as $row) {
-                        $normalizedRow = $this->normalizeValues($row, [$this->templateModel->getModule()->basetableid]);
-                        if (!empty($normalizedRow)) {
-                            $this->values['blocks'][$key]['fields'][] = $normalizedRow;
-                        }
-                    }
-                }
-                if (array_key_exists('views', $blockQuery)) {
-                    foreach ($blockQuery['views'] as $view) {
-                        $result = $adb->query($view['query'], $params);
-                        $this->values['blocks'][$key]['views'][$view['view']] = $result->getResultSet();
-                    }
-                }
-			}
-		}
-
 	}
 
 	/**
-	 * @param array $values
-	 * @param array $skipFields
-	 * @return array
-	 */
-	private function normalizeValues(array $values = [], array $skipFields = []) : array {
-
-		foreach ($values as $field => $value) {
-			if (!in_array($field, $skipFields)) {
-				if (!empty($value)) {
-					return $values;
-				}
-			}
-		}
-
-		return [];
-
-	}
-
-	/**
-	 * @throws AppException
-	 * @throws Exception
+	 * @return void
+	 * @throws ElementException
+	 * @throws RenderException
+	 * @throws DOMException
 	 */
 	public function renderFieldElements() : void {
 
 		$fieldRender = new FieldRender();
-		$fieldElements = $this->contentPart->getFieldElements();
+		$fieldElements = $this->elementGenerator->getFieldElements();
 
 		if ($fieldElements) {
 			$fieldRender->render($fieldElements, $this->values['fields']);
@@ -172,12 +122,14 @@ class RenderEngine {
 	}
 
 	/**
-	 * @throws Exception
+	 * @return void
+	 * @throws ElementException
+	 * @throws RenderException
 	 */
 	public function renderTextElements() : void {
 
 		$textRender = new TextRender();
-		$textElements = $this->contentPart->getTextElements();
+		$textElements = $this->elementGenerator->getTextElements();
 
 		if ($textElements) {
 			$textRender->render($textElements);
@@ -185,14 +137,16 @@ class RenderEngine {
 
 	}
 
-    /**
-     * @return void
-     * @throws AppException
-     */
+	/**
+	 * @return void
+	 * @throws DOMException
+	 * @throws ElementException
+	 * @throws RenderException
+	 */
     public function renderViewElements() : void {
 
         $viewElementRender = new ViewElementRender();
-        $viewElements = $this->contentPart->getViewElements();
+        $viewElements = $this->elementGenerator->getViewElements();
 
         if ($viewElements) {
             $viewElementRender->render($viewElements);
@@ -201,13 +155,15 @@ class RenderEngine {
     }
 
 	/**
-	 * @throws AppException
-	 * @throws Exception
+	 * @return void
+	 * @throws ElementException
+	 * @throws RenderException
+	 * @throws ConditionParserException
 	 */
 	public function renderConditionElements() : void {
 
 		$conditionRender = new ConditionRender();
-		$conditionElements = $this->contentPart->getConditionElements();
+		$conditionElements = $this->elementGenerator->getConditionElements();
 
 		if ($conditionElements) {
 			$conditionRender->render($conditionElements, $this->values['fields']);
@@ -216,11 +172,15 @@ class RenderEngine {
 	}
 
 	/**
-	 * @throws Exception
+	 * @return void
+	 * @throws ConditionParserException
+	 * @throws DOMException
+	 * @throws ElementException
+	 * @throws RenderException
 	 */
 	public function renderBlocks() : void {
 
-		$blockElements = $this->contentPart->getBlockElements();
+		$blockElements = $this->elementGenerator->getBlockElements();
 
 		if ($blockElements) {
 			$blockRender = new BlockRender();

@@ -1,14 +1,15 @@
 <?php
 
-namespace Tests\Parser\Element;
+namespace Tests\Parser\Element\Word;
 
 use ACAT\Exception\ElementException;
+use ACAT\Parser\Element\ElementGenerator;
 use ACAT\Parser\Element\FieldElement;
 use ACAT\Parser\Element\ParagraphBlock;
 use ACAT\Parser\Element\TableCellBlock;
 use ACAT\Parser\Element\TableRowBlock;
 use ACAT\Parser\Element\TextBlock;
-use ACAT\Parser\Element\WordElementGenerator;
+use ACAT\Parser\Element\Word\WordElementGenerator;
 use DOMNode;
 use Test\Template\Model\Document\Element\AbstractElementTest;
 
@@ -186,8 +187,7 @@ class WordElementGeneratorTest extends AbstractElementTest {
 	 * @throws ElementException
 	 */
 	private function getElementGenerator () : WordElementGenerator {
-		return new WordElementGenerator($this->getWordContentPart());
-
+		return ElementGenerator::getInstance($this->getWordContentPart());
 	}
 
 }

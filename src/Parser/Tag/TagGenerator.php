@@ -90,6 +90,11 @@ abstract class TagGenerator {
 	}
 
 	/**
+	 * @return void
+	 */
+	abstract function generateTags() : void;
+
+	/**
 	 * @return DOMNodeList
 	 */
 	protected abstract function getTextNodes() : DOMNodeList;

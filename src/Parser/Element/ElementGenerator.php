@@ -3,9 +3,14 @@
 namespace ACAT\Parser\Element;
 
 use ACAT\Document\ContentPart;
+use ACAT\Document\HTML\HTMLContentPart;
+use ACAT\Document\Word\WordContentPart;
 use ACAT\Exception\ElementException;
+use ACAT\Parser\Element\Html\HtmlElementGenerator;
+use ACAT\Parser\Element\Word\WordElementGenerator;
 use ACAT\Parser\ParserConstants;
 use ACAT\Utils\DOMUtils;
+use DOMElement;
 use DOMNode;
 use DOMNodeList;
 
@@ -48,9 +53,27 @@ abstract class ElementGenerator {
 	 * @param ContentPart $contentPart
 	 * @throws ElementException
 	 */
-	public function __construct(ContentPart $contentPart) {
+	private function __construct(ContentPart $contentPart) {
 		$this->contentPart = $contentPart;
 		$this->generateElements();
+	}
+
+	/**
+	 * @param ContentPart $contentPart
+	 * @return ElementGenerator
+	 * @throws ElementException
+	 */
+	static function getInstance(ContentPart $contentPart) : ElementGenerator {
+
+		if ($contentPart instanceof WordContentPart) {
+			return new WordElementGenerator($contentPart);
+		}
+		else if ($contentPart instanceof HTMLContentPart) {
+			return new HtmlElementGenerator($contentPart);
+		}
+
+		throw new ElementException('unknown content type');
+
 	}
 
 	/**
@@ -63,29 +86,8 @@ abstract class ElementGenerator {
 	/**
 	 * @return array
 	 */
-	public function getBlockTypes(): array {
-		return $this->blockTypes;
-	}
-
-	/**
-	 * @return array
-	 */
 	public function getTextBlocks(): array {
 		return $this->textBlocks;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getParagraphBlocks(): array {
-		return $this->paragraphBlocks;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getTableCellBlocks(): array {
-		return $this->tableCellBlocks;
 	}
 
 	/**
@@ -268,7 +270,7 @@ abstract class ElementGenerator {
 	 * @param DOMNode $contextNode
 	 * @return DOMNode|null
 	 */
-	protected function getEndBlockNode(DOMNode $contextNode): ?DOMNode {
+	protected function getEndBlockNode(DOMNode $contextNode): ?DOMElement {
 
 		if ($contextNode->nodeName == 'acat:block') {
 			return $contextNode;
