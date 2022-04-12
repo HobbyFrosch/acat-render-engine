@@ -20,12 +20,10 @@ class WordTagGenerator extends TagGenerator {
 	}
 
 	/**
-	 * @param ContentPart $contentPart
 	 * @return void
 	 */
-	public function generateTags(ContentPart $contentPart): void {
+	public function generateTags(): void {
 
-		$this->contentPart = $contentPart;
 		$textNodes = $this->getTextNodes();
 
 		foreach ($textNodes as $textNode) {

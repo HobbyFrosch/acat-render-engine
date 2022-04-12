@@ -3,11 +3,12 @@
 namespace ACAT\Parser\Tag;
 
 use ACAT\Document\ContentPart;
+use ACAT\Document\HTML\HTMLContentPart;
+use ACAT\Document\Word\WordContentPart;
 use ACAT\Exception\PlaceholderException;
-use ACAT\Parser\ParserConstants;
+use ACAT\Exception\TagGeneratorException;
 use ACAT\Parser\Placeholder\ACatPlaceholder;
 use ACAT\Parser\Placeholder\WordTextPlaceholder;
-use DOMNode;
 use DOMNodeList;
 
 /**
@@ -19,6 +20,31 @@ abstract class TagGenerator {
 	 * @var ContentPart
 	 */
 	protected ContentPart $contentPart;
+
+	/**
+	 * @param ContentPart $contentPart
+	 */
+	private function __construct(ContentPart $contentPart) {
+		$this->contentPart = $contentPart;
+	}
+
+	/**
+	 * @param ContentPart $contentPart
+	 * @return static
+	 * @throws TagGeneratorException
+	 */
+	public static function getInstance(ContentPart $contentPart) : self {
+
+		if ($contentPart instanceof WordContentPart) {
+			return new WordTagGenerator($contentPart);
+		}
+		else if ($contentPart instanceof HTMLContentPart) {
+			return new HTMLTagGenerator($contentPart);
+		}
+
+		throw new TagGeneratorException('unimplemented content part');
+
+	}
 
 	/**
 	 * @param array $matches

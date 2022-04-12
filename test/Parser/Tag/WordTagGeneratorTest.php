@@ -5,12 +5,14 @@ namespace Tests\Parser\Tag;
 use ACAT\Document\Word\WordContentPart;
 use ACAT\Document\Word\WordDocument;
 use ACAT\Exception\DocumentException;
+use ACAT\Exception\TagGeneratorException;
 use ACAT\Parser\Normalizer;
 use ACAT\Parser\ParserConstants;
 use ACAT\Parser\Placeholder\BlockPlaceholder;
 use ACAT\Parser\Placeholder\FieldPlaceholder;
 use ACAT\Parser\Placeholder\TextPlaceholder;
 use ACAT\Parser\Placeholder\WordTextPlaceholder;
+use ACAT\Parser\Tag\TagGenerator;
 use ACAT\Parser\Tag\WordTagGenerator;
 use DOMNodeList;
 use PHPUnit\Framework\TestCase;
@@ -22,6 +24,7 @@ class WordTagGeneratorTest extends TestCase {
 
 	/**
 	 * @test
+	 * @throws TagGeneratorException
 	 */
 	public function getTagWithOnePlaceHolder(): void {
 
@@ -36,6 +39,7 @@ class WordTagGeneratorTest extends TestCase {
 
 	/**
 	 * @test
+	 * @throws TagGeneratorException
 	 */
 	public function getTagsWithPlaceHolderAtTheEnd(): void {
 
@@ -57,6 +61,7 @@ class WordTagGeneratorTest extends TestCase {
 
 	/**
 	 * @test
+	 * @throws TagGeneratorException
 	 */
 	public function getTagsWithPlaceHolderAtTheStart(): void {
 
@@ -75,6 +80,7 @@ class WordTagGeneratorTest extends TestCase {
 
 	/**
 	 * @test
+	 * @throws TagGeneratorException
 	 */
 	public function getTagsWithOnlyPlaceHolders(): void {
 
@@ -108,6 +114,7 @@ class WordTagGeneratorTest extends TestCase {
 
 	/**
 	 * @test
+	 * @throws TagGeneratorException
 	 */
 	public function getTagWithPlaceHolderAtTheStartAndEnd(): void {
 
@@ -129,6 +136,7 @@ class WordTagGeneratorTest extends TestCase {
 
 	/**
 	 * @test
+	 * @throws TagGeneratorException
 	 */
 	public function getTagWithOnePlaceHolderAndText(): void {
 
@@ -150,6 +158,7 @@ class WordTagGeneratorTest extends TestCase {
 
 	/**
 	 * @test
+	 * @throws TagGeneratorException
 	 */
 	public function getTagWithOnePlaceHolderInTheMiddleAndAtTheEnd(): void {
 
@@ -175,10 +184,11 @@ class WordTagGeneratorTest extends TestCase {
 	/**
 	 * @param $testString
 	 * @return array
+	 * @throws TagGeneratorException
 	 */
 	private function getNodes($testString): array {
 
-		$tagGenerator = new WordTagGenerator();
+		$tagGenerator = TagGenerator::getInstance(new WordContentPart('', $testString));
 		preg_match_all(ParserConstants::MARKER_REG_EX, $testString, $matches, PREG_OFFSET_CAPTURE);
 
 		return $tagGenerator->getTags($matches, $testString);
@@ -189,6 +199,7 @@ class WordTagGeneratorTest extends TestCase {
 	 * @test
 	 *
 	 * @throws DocumentException
+	 * @throws TagGeneratorException
 	 */
 	public function createTags(): void {
 
@@ -206,12 +217,6 @@ class WordTagGeneratorTest extends TestCase {
 		//check instance
 		$this->assertInstanceOf(WordDocument::class, $wordDocument);
 
-		//word tag generator
-		$wordTagGenerator = new WordTagGenerator();
-
-		//check instance
-		$this->assertInstanceOf(WordTagGenerator::class, $wordTagGenerator);
-
 		//normalizer
 		$normalizer = new Normalizer();
 
@@ -226,6 +231,12 @@ class WordTagGeneratorTest extends TestCase {
 
 			//normalize the content part
 			$normalizer->normalize($contentPart);
+
+			//word tag generator
+			$wordTagGenerator = TagGenerator::getInstance($contentPart);
+
+			//check instance
+			$this->assertInstanceOf(WordTagGenerator::class, $wordTagGenerator);
 
 			//generate tags
 			$wordTagGenerator->generateTags($contentPart);
