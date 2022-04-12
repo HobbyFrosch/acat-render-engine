@@ -44,12 +44,7 @@ class DeleteNextElementAction extends ConditionAction {
 			}
 		}
 
-		if ($nodeToDelete) {
-			$nodeToDelete->parentNode->removeChild($nodeToDelete);
-		}
-		else {
-			throw new RenderException($this->conditionElement->getElement()->nodeName . ' has no following placeholders');
-		}
+		$nodeToDelete?->parentNode->removeChild($nodeToDelete);
 
 	}
 }

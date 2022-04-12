@@ -35,7 +35,8 @@ class ConditionParser {
 		$termValues = $this->getCompareValue($conditionElement->getExpression());
 
 		if (empty($termValues)) {
-			throw new ConditionParserException('unknown condition ' . $conditionElement->getExpression());
+			return false;
+			//throw new ConditionParserException('unknown condition ' . $conditionElement->getExpression());
 		}
 
 		if (array_key_exists($conditionElement->getFieldId(), $values)) {
