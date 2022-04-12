@@ -1,6 +1,6 @@
 <?php
 
-	namespace ACAT\Render\Element;
+namespace ACAT\Render\Element;
 
 use ACAT\Exception\ElementException;
 use ACAT\Exception\RenderException;

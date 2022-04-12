@@ -1,24 +1,13 @@
 <?php
-/*
- * Copyright (c) 2020 - Akademie für Weiterbildung der Universtät Bremen
- *
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
- * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
- * All Rights eserved.
- * reviewed and modified by Akademie für Weiterbildung der Universtät Bremen
- */
 
-namespace ACAT\Modul\Setting\Template\Model\Parser\Condition;
+namespace ACAT\Render\Condition\Action;
 
-use ACAT\App\Exception\AppException;
-use ACAT\Modul\Setting\Template\Model\Document\Element\ConditionElement;
+use ACAT\Exception\ElementException;
+use ACAT\Exception\RenderException;
+use ACAT\Parser\Element\ConditionElement;
 
 /**
- * Class ConditionAction
- * @package ACAT\Modul\Setting\Template\Model\Condition
+ *
  */
 abstract class ConditionAction {
 
@@ -38,7 +27,8 @@ abstract class ConditionAction {
 	/**
 	 * @param ConditionElement $conditionElement
 	 * @return ConditionAction
-	 * @throws AppException
+	 * @throws RenderException
+	 * @throws ElementException
 	 */
 	static function getAction(ConditionElement $conditionElement) : ConditionAction {
 
@@ -58,7 +48,7 @@ abstract class ConditionAction {
 			$action = new DeleteUntilNextElementAction($conditionElement);
 		}
 		else {
-			throw new AppException('unsupported action');
+			throw new RenderException('unsupported action');
 		}
 
 		return $action;

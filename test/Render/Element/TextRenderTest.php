@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Parser\Render\Element;
+namespace Tests\Render\Element;
 
 use ACAT\Exception\ElementException;
 use ACAT\Exception\RenderException;
@@ -9,8 +9,11 @@ use ACAT\Parser\ParserConstants;
 use ACAT\Render\Element\TextRender;
 use DOMException;
 use DOMNodeList;
-use Tests\Parser\Render\AbstractRenderTest;
+use Tests\Render\AbstractRenderTest;
 
+/**
+ *
+ */
 class TextRenderTest extends AbstractRenderTest {
 
 	/**

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Parser\Render;
+namespace Tests\Render;
 
 use ACAT\Document\Word\WordContentPart;
 use ACAT\Exception\ElementException;
@@ -17,7 +17,7 @@ class AbstractRenderTest extends TestCase {
 	 *
 	 * @return WordContentPart
 	 */
-	public function getWordContentPart() : WordContentPart {
+	public function getWordContentPart(): WordContentPart {
 
 		$testXMLFile = __DIR__ . '/Resources/document.xml';
 
@@ -31,7 +31,7 @@ class AbstractRenderTest extends TestCase {
 	/**
 	 * @return array
 	 */
-	protected function getValues() : array {
+	protected function getValues(): array {
 
 		$values['156'] = 156;
 		$values['1121'] = 1121;
@@ -48,9 +48,26 @@ class AbstractRenderTest extends TestCase {
 	 * @return WordElementGenerator
 	 * @throws ElementException
 	 */
-	public function getWordElementGenerator() : WordElementGenerator {
+	public function getWordElementGenerator(): WordElementGenerator {
 		$wordContentPart = $this->getWordContentPart();
 		return new WordElementGenerator($wordContentPart);
+	}
+
+	/**
+	 * @return WordContentPart
+	 */
+	private function getParagraphBlockContentPart(): WordContentPart {
+
+		$testXMLFile = __DIR__ . '/Resources/ParagraphBlock.xml';
+
+		$xmlContent = file_get_contents($testXMLFile);
+		$this->assertIsString($xmlContent);
+
+		$contentPart = new WordContentPart($testXMLFile, $xmlContent);
+		$this->assertInstanceOf(WordContentPart::class, $contentPart);
+
+		return $contentPart;
+
 	}
 
 }

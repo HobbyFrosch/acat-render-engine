@@ -1,24 +1,13 @@
 <?php
-/*
- * Copyright (c) 2020 - Akademie für Weiterbildung der Universtät Bremen
- *
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
- * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
- * All Rights eserved.
- * reviewed and modified by Akademie für Weiterbildung der Universtät Bremen
- */
 
-namespace ACAT\Modul\Setting\Template\Model\Parser\Condition;
+namespace ACAT\Render\Condition\Action;
 
-use ACAT\App\Exception\AppException;
-use ACAT\App\Util\DOMUtils;
+
+use ACAT\Exception\RenderException;
+use ACAT\Utils\DOMUtils;
 
 /**
- * Class DeleteUntilNextElementAction
- * @package ACAT\Modul\Setting\Template\Model\Parser\Condition
+ *
  */
 class DeleteUntilNextElementAction extends ConditionAction {
 
@@ -28,7 +17,8 @@ class DeleteUntilNextElementAction extends ConditionAction {
 	private array $validNodeNames = ['acat:condition', 'acat:field', 'acat:text'];
 
 	/**
-	 * @throws AppException
+	 * @return void
+	 * @throws RenderException
 	 */
 	public function execute() : void {
 		foreach ($this->getNodesToDelete() as $nodeToDelete) {
@@ -38,7 +28,7 @@ class DeleteUntilNextElementAction extends ConditionAction {
 
 	/**
 	 * @return array
-	 * @throws AppException
+	 * @throws RenderException
 	 */
 	private function getNodesToDelete() : array {
 
@@ -48,7 +38,7 @@ class DeleteUntilNextElementAction extends ConditionAction {
 		$runNode = DOMUtils::getParentNode($this->conditionElement->getElement(), 'w:r');
 
 		if (!$runNode) {
-			throw new AppException('malformed content part');
+			throw new RenderException('malformed content part');
 		}
 
 		$runNodes = $this->conditionElement->getContentPart()->getXPath()->query('self::*|following-sibling::*', $runNode);

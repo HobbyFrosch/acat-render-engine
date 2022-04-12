@@ -1,37 +1,28 @@
 <?php
-/*
- * Copyright (c) 2020 - Akademie für Weiterbildung der Universtät Bremen
- *
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
- * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
- * All Rights eserved.
- * reviewed and modified by Akademie für Weiterbildung der Universtät Bremen
- */
 
-namespace ACAT\Modul\Setting\Template\Model\Render;
+namespace ACAT\Render\Block;
 
-use ACAT\App\Exception\AppException;
-use ACAT\App\Logging;
-use ACAT\Modul\Setting\Template\Model\Document\Element\BlockElement;
-use ACAT\Modul\Setting\Template\Model\Document\Element\ParagraphBlock;
-use ACAT\Modul\Setting\Template\Model\Document\Element\TableCellBlock;
-use ACAT\Modul\Setting\Template\Model\Document\Element\TableRowBlock;
-use ACAT\Modul\Setting\Template\Model\Document\Element\TextBlock;
-use DOMNode;
+use ACAT\Exception\RenderException;
+use ACAT\Modul\Setting\Template\Model\Render\ConditionRender;
+use ACAT\Modul\Setting\Template\Model\Render\ViewElementRender;
+use ACAT\Parser\Element\BlockElement;
+use ACAT\Parser\Element\ParagraphBlock;
+use ACAT\Parser\Element\TableCellBlock;
+use ACAT\Parser\Element\TableRowBlock;
+use ACAT\Parser\Element\TextBlock;
+use ACAT\Render\Element\FieldRender;
+use ACAT\Render\Element\TextRender;
+use ACAT\Render\Render;
 use Exception;
 
 /**
- * Class BlockRender
- * @package ACAT\Modul\Setting\Template\Model\Render
+ *
  */
 class BlockRender extends Render {
 
-    /**
-     * @var BlockElement
-     */
+	/**
+	 * @var BlockElement
+	 */
     protected BlockElement $blockElement;
 
     /**
@@ -39,12 +30,12 @@ class BlockRender extends Render {
      */
     protected array $values = [];
 
-    /**
-     * @param BlockElement $blockElement
-     * @param array $values
-     * @return BlockRender
-     * @throws AppException
-     */
+	/**
+	 * @param BlockElement $blockElement
+	 * @param array $values
+	 * @return BlockRender
+	 * @throws RenderException
+	 */
     public function getBlockRender(BlockElement $blockElement, array $values): BlockRender {
 
         if ($blockElement instanceof TextBlock) {
@@ -60,15 +51,16 @@ class BlockRender extends Render {
             return new TableRowBlockRender($blockElement, $values);
         }
         else {
-            throw new AppException('unknown block render');
+            throw new RenderException('unknown block render');
         }
 
     }
 
-    /**
-     * @throws AppException
-     * @throws Exception
-     */
+	/**
+	 * @throws AppException
+	 * @throws Exception
+	 * @throws Exception
+	 */
     private function renderBlock(): void {
 
         $textRender = new TextRender();
@@ -116,29 +108,22 @@ class BlockRender extends Render {
 
     }
 
-
-    /**
-     * @param array $elements
-     * @param array $values
-     * @return mixed|void
-     * @throws Exception
-     */
+	/**
+	 * @param array $elements
+	 * @param array $values
+	 * @return void
+	 * @throws RenderException
+	 * @throws Exception
+	 */
     public function render(array $elements, array $values = []): void {
 
         foreach ($elements as $key => $blockElement) {
 
-            try {
+			$blockValues = $this->getValues($key, $values);
+			$blockRender = $this->getBlockRender($blockElement, $blockValues);
 
-                $blockValues = $this->getValues($key, $values);
-                $blockRender = $this->getBlockRender($blockElement, $blockValues);
-
-                $blockRender->renderBlock();
-                $blockRender->cleanUpBlock();
-
-            }
-            catch (AppException $e) {
-                Logging::getFormLogger()->warn($e);
-            }
+			$blockRender->renderBlock();
+			$blockRender->cleanUpBlock();
 
         }
 
