@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Render\Condition;
+namespace Tests\Render\Block;
 
 use ACAT\Exception\ConditionParserException;
 use ACAT\Exception\ElementException;

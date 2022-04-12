@@ -4,6 +4,9 @@ namespace ACAT\Render\Condition\Action;
 
 use ACAT\Exception\RenderException;
 
+/**
+ *
+ */
 class DeleteRemainingElementsAction extends ConditionAction {
 
 	/**
@@ -11,7 +14,7 @@ class DeleteRemainingElementsAction extends ConditionAction {
 	 * @throws RenderException
 	 */
 	public function execute() : void {
-		$nodes = $this->conditionElement->getContentPart()->getXPath()->query('.//acat:field|.//acat:text', $this->conditionElement->getElement());
+		$nodes = $this->conditionElement->getXpath()->query('.//acat:field|.//acat:text', $this->conditionElement->getElement());
 		foreach ($nodes as $node) {
 			$deletedNode = $node->parentNode->removeChild($node);
 			if (!$deletedNode->isSameNode($node)) {

@@ -32,9 +32,6 @@ class DeleteParagraphAction extends ConditionAction {
 				}
 			}
 		}
-		else {
-			throw new RenderException($this->conditionElement->getId() . ' is already deleted');
-		}
 	}
 
 	/**

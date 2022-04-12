@@ -33,10 +33,13 @@ class StringUtils {
 	/**
 	 * @param string $haystack
 	 * @param string $needle
+	 *
+	 * @deprecated
+	 *
 	 * @return bool
 	 */
     static function contains(string $haystack, string $needle) : bool {
-	    return !((stripos($haystack, $needle) === false));
+		return str_contains($haystack, $needle);
     }
 
     /**

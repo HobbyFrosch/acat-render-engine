@@ -103,4 +103,29 @@ class AbstractRenderTest extends TestCase {
 		return new WordElementGenerator($this->getTableRowBlockContentPart());
 	}
 
+	/**
+	 * @return WordContentPart
+	 */
+	protected function getConditionContentPart(): WordContentPart {
+
+		$testXMLFile = __DIR__ . '/Resources/Conditions.xml';
+
+		$xmlContent = file_get_contents($testXMLFile);
+		$this->assertIsString($xmlContent);
+
+		$contentPart = new WordContentPart($testXMLFile, $xmlContent);
+		$this->assertInstanceOf(WordContentPart::class, $contentPart);
+
+		return $contentPart;
+
+	}
+
+	/**
+	 * @return WordElementGenerator
+	 * @throws ElementException
+	 */
+	public function getConditionElementGenerator() : WordElementGenerator {
+		return new WordElementGenerator($this->getConditionContentPart());
+	}
+
 }

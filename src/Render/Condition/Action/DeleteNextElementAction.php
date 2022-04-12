@@ -24,7 +24,7 @@ class DeleteNextElementAction extends ConditionAction {
 		$nodeToDelete = null;
 
 		$element = $this->conditionElement->getElement();
-		$elements = $this->conditionElement->getContentPart()->getXPath()->query($this->query, $element);
+		$elements = $this->conditionElement->getXPath()->query($this->query, $element);
 
 		if ($elements->length > 0) {
 			$nodeToDelete = $elements->item(0);
@@ -34,9 +34,9 @@ class DeleteNextElementAction extends ConditionAction {
 			if (!$parentNode) {
 				throw new RenderException($element->nodeName . ' has no parent w:r');
 			}
-			$rNodes = $this->conditionElement->getContentPart()->getXPath()->query('following-sibling::w:r', $parentNode);
+			$rNodes = $this->conditionElement->getXPath()->query('following-sibling::w:r', $parentNode);
 			foreach ($rNodes as $rNode) {
-				$elements = $this->conditionElement->getContentPart()->getXPath()->query($this->query, $rNode);
+				$elements = $this->conditionElement->getXPath()->query($this->query, $rNode);
 				if ($elements->length > 0) {
 					$nodeToDelete = $elements->item(0);
 					break;
