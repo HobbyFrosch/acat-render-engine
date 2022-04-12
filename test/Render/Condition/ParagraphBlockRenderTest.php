@@ -1,13 +1,14 @@
 <?php
 
-
 namespace Tests\Render\Condition;
 
+use ACAT\Exception\ConditionParserException;
 use ACAT\Exception\ElementException;
 use ACAT\Exception\RenderException;
 use ACAT\Parser\Element\ParagraphBlock;
 use ACAT\Render\Block\ParagraphBlockRender;
 use ACAT\Utils\StringUtils;
+use DOMException;
 use JetBrains\PhpStorm\ArrayShape;
 use Tests\Render\AbstractRenderTest;
 
@@ -41,6 +42,8 @@ class ParagraphBlockRenderTest extends AbstractRenderTest {
 	 * @return void
 	 * @throws ElementException
 	 * @throws RenderException
+	 * @throws ConditionParserException
+	 * @throws DOMException
 	 */
 	public function renderParagraphBlock(): void {
 
@@ -70,7 +73,11 @@ class ParagraphBlockRenderTest extends AbstractRenderTest {
 	}
 
 	/**
+	 * @test
+	 *
 	 * @return void
+	 * @throws ConditionParserException
+	 * @throws DOMException
 	 * @throws ElementException
 	 * @throws RenderException
 	 */
@@ -95,7 +102,7 @@ class ParagraphBlockRenderTest extends AbstractRenderTest {
 
 		/* check correct sequence */
 		for ($i = 0; $i < $contentElements->length; $i++) {
-			$this->assertTrue(StringUtils::contains(trim($contentElements->item($i)->nodeValue), $values['blocks'][0][$i][1786]));
+			$this->assertTrue(StringUtils::contains(trim($contentElements->item($i)->nodeValue), $values['blocks'][0]['fields'][$i][1786]));
 		}
 
 	}

@@ -78,4 +78,29 @@ class AbstractRenderTest extends TestCase {
 		return new WordElementGenerator($this->getParagraphBlockContentPart());
 	}
 
+	/**
+	 * @return WordContentPart
+	 */
+	private function getTableRowBlockContentPart(): WordContentPart {
+
+		$testXMLFile = __DIR__ . '/Resources/TableRowBlock.xml';
+
+		$xmlContent = file_get_contents($testXMLFile);
+		$this->assertIsString($xmlContent);
+
+		$contentPart = new WordContentPart($testXMLFile, $xmlContent);
+		$this->assertInstanceOf(WordContentPart::class, $contentPart);
+
+		return $contentPart;
+
+	}
+
+	/**
+	 * @return WordElementGenerator
+	 * @throws ElementException
+	 */
+	public function getWordTableRowElementGenerator() : WordElementGenerator {
+		return new WordElementGenerator($this->getTableRowBlockContentPart());
+	}
+
 }

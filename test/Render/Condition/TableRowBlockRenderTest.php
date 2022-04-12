@@ -1,41 +1,30 @@
 <?php
-/*
- * Copyright (c) 2021 - Akademie für Weiterbildung der Universtät Bremen
- *
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
- * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
- * All Rights eserved.
- * reviewed and modified by Akademie für Weiterbildung der Universtät Bremen
- */
 
-namespace Test\Template\Model\Document\Render;
+namespace Tests\Render\Condition;
 
-
-use ACAT\App\Exception\AppException;
-use ACAT\App\Runtime\Globals;
-use ACAT\Modul\Setting\Template\Model\Document\ContentPart;
-use ACAT\Modul\Setting\Template\Model\Document\Element\TableRowBlock;
-use ACAT\Modul\Setting\Template\Model\Render\TableRowBlockRender;
-use Exception;
-use PHPUnit\Framework\TestCase;
+use ACAT\Exception\ConditionParserException;
+use ACAT\Exception\ElementException;
+use ACAT\Exception\RenderException;
+use ACAT\Parser\Element\TableRowBlock;
+use ACAT\Render\Block\TableRowBlockRender;
+use DOMException;
+use Tests\Render\AbstractRenderTest;
 
 /**
- * Class TableRowBlockRenderTest
- * @package Test\Template\Model\Document\Render
+ *
  */
-class TableRowBlockRenderTest extends TestCase {
+class TableRowBlockRenderTest extends AbstractRenderTest {
 
 	/**
 	 * @test
-	 * @throws AppException
-	 * @throws Exception
+	 *
+	 * @return void
+	 * @throws ElementException
 	 */
-	public function aTableRowBlockRenderCanBeCreated() : void {
+	public function aTableRowBlockRenderCanBeCreated(): void {
 
-		$blockElements = $this->getContentPart()->getBlockElements();
+		$wordTableRowElementGenerator = $this->getWordTableRowElementGenerator();
+		$blockElements = $wordTableRowElementGenerator->getBlocks();
 
 		$this->assertCount(1, $blockElements);
 		$this->assertInstanceOf(TableRowBlock::class, $blockElements[0]);
@@ -47,60 +36,68 @@ class TableRowBlockRenderTest extends TestCase {
 
 	/**
 	 * @test
-	 * @throws AppException
-	 * @throws Exception
+	 *
+	 * @return void
+	 * @throws ElementException
+	 * @throws ConditionParserException
+	 * @throws RenderException
+	 * @throws DOMException
 	 */
-	public function renderTableRowBlock() : void {
+	public function renderTableRowBlock(): void {
 
-		$contentPart = $this->getContentPart();
-		$blockElements = $contentPart->getBlockElements();
+		$wordTableRowElementGenerator = $this->getWordTableRowElementGenerator();
+		$blockElements = $wordTableRowElementGenerator->getBlocks();
 
 		$this->assertCount(1, $blockElements);
 		$this->assertInstanceOf(TableRowBlock::class, $blockElements[0]);
 
-		$tableRowBlockRender = new TableRowBlockRender($blockElements[0], $this->getValues());
+		$tableRowBlockRender = new TableRowBlockRender($blockElements[0], $this->getBlockValues());
 		$this->assertInstanceOf(TableRowBlockRender::class, $tableRowBlockRender);
 
-		$tableRowBlockRender->render($blockElements, $this->getValues());
+		$tableRowBlockRender->render($blockElements, $this->getBlockValues());
 
 		/* must not exist */
-		$startBlock = $contentPart->getXPath()->query('//w:tr[@id="b_start"]');
+		$startBlock = $wordTableRowElementGenerator->getContentPart()->getXPath()->query('//w:tr[@id="b_start"]');
 		$this->assertEquals(0, $startBlock->length);
 
 		/* must not exist */
-		$endBlock = $contentPart->getXPath()->query('//w:tr[@id="b_end"]');
+		$endBlock = $wordTableRowElementGenerator->getContentPart()->getXPath()->query('//w:tr[@id="b_end"]');
 		$this->assertEquals(0, $endBlock->length);
 
 		/* there must be exactly two */
-		$endBlock = $contentPart->getXPath()->query('//w:tr[@type="b_content"]');
+		$endBlock = $wordTableRowElementGenerator->getContentPart()->getXPath()->query('//w:tr[@type="b_content"]');
 		$this->assertEquals(2, $endBlock->length);
 
 		/* there must be exactly two */
-		$endBlock = $contentPart->getXPath()->query('//w:tr[@type="content"]');
+		$endBlock = $wordTableRowElementGenerator->getContentPart()->getXPath()->query('//w:tr[@type="content"]');
 		$this->assertEquals(2, $endBlock->length);
 
 	}
 
 	/**
 	 * @test
-	 * @throws AppException
-	 * @throws Exception
+	 *
+	 * @return void
+	 * @throws ConditionParserException
+	 * @throws DOMException
+	 * @throws ElementException
+	 * @throws RenderException
 	 */
-	public function renderTableRowInCorrectSequence() : void {
+	public function renderTableRowInCorrectSequence(): void {
 
 		$expectedSequence = ['b_content', 'b_content', 'content', 'content'];
 
-		$contentPart = $this->getContentPart();
-		$blockElements = $contentPart->getBlockElements();
+		$wordTableRowElementGenerator = $this->getWordTableRowElementGenerator();
+		$blockElements = $wordTableRowElementGenerator->getBlocks();
 
 		$this->assertCount(1, $blockElements);
 		$this->assertInstanceOf(TableRowBlock::class, $blockElements[0]);
 
-		$tableRowBlockRender = new TableRowBlockRender($blockElements[0], $this->getValues());
+		$tableRowBlockRender = new TableRowBlockRender($blockElements[0], $this->getBlockValues());
 		$this->assertInstanceOf(TableRowBlockRender::class, $tableRowBlockRender);
 
-		$tableRowBlockRender->render($blockElements, $this->getValues());
-		$tableRows = $contentPart->getXPath()->query('//w:tr');
+		$tableRowBlockRender->render($blockElements, $this->getBlockValues());
+		$tableRows = $wordTableRowElementGenerator->getContentPart()->getXPath()->query('//w:tr');
 
 		/* there must be exactly four */
 		$this->assertEquals(4, $tableRows->length);
@@ -113,28 +110,12 @@ class TableRowBlockRenderTest extends TestCase {
 
 	}
 
-	/**
-	 * @return ContentPart
-	 * @throws AppException
-	 */
-	private function getContentPart () : ContentPart {
 
-		$testXMLFile = __DIR__ . '/resources/TableRowBlock.xml';
-
-		$xmlContent = file_get_contents($testXMLFile);
-		$this->assertIsString($xmlContent);
-
-		$contentPart = new ContentPart($testXMLFile, $xmlContent);
-		$this->assertInstanceOf(ContentPart::class, $contentPart);
-
-		return $contentPart;
-
-	}
 
 	/**
 	 * @return array
 	 */
-	private function getValues() : array {
+	private function getBlockValues(): array {
 
 		$values['fields']["rechnung_id"] = 2739;
 		$values['fields']["1757"] = null;
@@ -168,13 +149,13 @@ class TableRowBlockRenderTest extends TestCase {
 		$values['fields']["1676"] = "PL - 10098";
 		$values['fields']["68"] = 30174;
 
-		$values['blocks'][0][0]["1909"] = "Kammercard";
-		$values['blocks'][0][0]["1910"] = "1212321";
-		$values['blocks'][0][0]["1914"] = 2250;
+		$values['blocks'][0]['fields'][0]["1909"] = "Kammercard";
+		$values['blocks'][0]['fields'][0]["1910"] = "1212321";
+		$values['blocks'][0]['fields'][0]["1914"] = 2250;
 
-		$values['blocks'][0][1]["1909"] = "Kammercard";
-		$values['blocks'][0][1]["1910"] = "1212321";
-		$values['blocks'][0][1]["1914"] = 2250;
+		$values['blocks'][0]['fields'][1]["1909"] = "Kammercard";
+		$values['blocks'][0]['fields'][1]["1910"] = "1212321";
+		$values['blocks'][0]['fields'][1]["1914"] = 2250;
 
 		return $values;
 
