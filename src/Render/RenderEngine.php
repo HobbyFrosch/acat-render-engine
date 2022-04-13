@@ -4,7 +4,6 @@
 namespace ACAT\Render;
 
 use ACAT\Document\ContentPart;
-use ACAT\Document\Document;
 use ACAT\Document\Word\WordDocument;
 use ACAT\Exception\ConditionParserException;
 use ACAT\Exception\DocumentException;
@@ -35,7 +34,10 @@ class RenderEngine {
 	/**
 	 * @var array
 	 */
-	private array $values = ['fields' => [], 'blocks' => []];
+	private array $values = [
+		'fields' => [],
+		'blocks' => []
+	];
 
 	/**
 	 * @var Normalizer
@@ -71,7 +73,7 @@ class RenderEngine {
 	 * @throws RenderException
 	 * @throws TagGeneratorException
 	 */
-	public function renderContentPart(ContentPart $contentPart) : void {
+	public function renderContentPart(ContentPart $contentPart): void {
 
 		$this->normalizer->normalize($contentPart);
 
@@ -98,7 +100,7 @@ class RenderEngine {
 	 * @throws RenderException
 	 * @throws TagGeneratorException
 	 */
-	public function render() : void {
+	public function render(): void {
 		foreach ($this->wordDocument->getContentParts() as $contentPart) {
 			$this->renderContentPart($contentPart);
 		}
@@ -110,7 +112,7 @@ class RenderEngine {
 	 * @throws RenderException
 	 * @throws DOMException
 	 */
-	public function renderFieldElements() : void {
+	public function renderFieldElements(): void {
 
 		$fieldRender = new FieldRender();
 		$fieldElements = $this->elementGenerator->getFieldElements();
@@ -126,7 +128,7 @@ class RenderEngine {
 	 * @throws ElementException
 	 * @throws RenderException
 	 */
-	public function renderTextElements() : void {
+	public function renderTextElements(): void {
 
 		$textRender = new TextRender();
 		$textElements = $this->elementGenerator->getTextElements();
@@ -143,16 +145,16 @@ class RenderEngine {
 	 * @throws ElementException
 	 * @throws RenderException
 	 */
-    public function renderViewElements() : void {
+	public function renderViewElements(): void {
 
-        $viewElementRender = new ViewElementRender();
-        $viewElements = $this->elementGenerator->getViewElements();
+		$viewElementRender = new ViewElementRender();
+		$viewElements = $this->elementGenerator->getViewElements();
 
-        if ($viewElements) {
-            $viewElementRender->render($viewElements);
-        }
+		if ($viewElements) {
+			$viewElementRender->render($viewElements);
+		}
 
-    }
+	}
 
 	/**
 	 * @return void
@@ -160,7 +162,7 @@ class RenderEngine {
 	 * @throws RenderException
 	 * @throws ConditionParserException
 	 */
-	public function renderConditionElements() : void {
+	public function renderConditionElements(): void {
 
 		$conditionRender = new ConditionRender();
 		$conditionElements = $this->elementGenerator->getConditionElements();
@@ -178,9 +180,9 @@ class RenderEngine {
 	 * @throws ElementException
 	 * @throws RenderException
 	 */
-	public function renderBlocks() : void {
+	public function renderBlocks(): void {
 
-		$blockElements = $this->elementGenerator->getBlockElements();
+		$blockElements = $this->elementGenerator->getBlocks();
 
 		if ($blockElements) {
 			$blockRender = new BlockRender();

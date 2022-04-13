@@ -41,10 +41,10 @@ class DeleteUntilNextElementAction extends ConditionAction {
 			throw new RenderException('malformed content part');
 		}
 
-		$runNodes = $this->conditionElement->getContentPart()->getXPath()->query('self::*|following-sibling::*', $runNode);
+		$runNodes = $this->conditionElement->getXPath()->query('self::*|following-sibling::*', $runNode);
 
 		foreach ($runNodes as $runNode) {
-			$nodes = $this->conditionElement->getContentPart()->getXPath()->query('child::*', $runNode);
+			$nodes = $this->conditionElement->getXPath()->query('child::*', $runNode);
 			foreach ($nodes as $node) {
 				if (!$node->isSameNode($this->conditionElement->getElement())) {
 					if (in_array($node->nodeName, $this->validNodeNames)) {

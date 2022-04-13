@@ -149,10 +149,12 @@ class BlockRender extends Render {
             $blockValues = [];
         }
 
-        foreach ($blockValues['fields'] as $blockKey => $blockValue) {
-            foreach ($values['fields'] as $fieldKey => $fieldValue) {
-                if (!array_key_exists($fieldKey, $blockValues['fields'][$blockKey])) {
-                    $blockValues['fields'][$blockKey][$fieldKey] = $fieldValue;
+        if ($blockValues && array_key_exists('fields', $blockValues)) {
+			foreach ($blockValues['fields'] as $blockKey => $blockValue) {
+                foreach ($values['fields'] as $fieldKey => $fieldValue) {
+	                if (!array_key_exists($fieldKey, $blockValues['fields'][$blockKey])) {
+		                $blockValues['fields'][$blockKey][$fieldKey] = $fieldValue;
+	                }
                 }
             }
         }

@@ -97,6 +97,8 @@ abstract class ElementGenerator {
 		return $this->tableRowBlocks;
 	}
 
+
+
 	/**
 	 * @return void
 	 * @throws ElementException
