@@ -85,9 +85,9 @@ class RenderEngine {
 		$this->renderConditionElements();
 		$this->renderFieldElements();
 		$this->renderTextElements();
-		$this->renderViewElements();;
+		$this->renderViewElements();
 
-		$this->renderBlocks();;
+		$this->renderBlocks();
 
 	}
 

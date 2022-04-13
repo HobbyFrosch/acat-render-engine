@@ -2,17 +2,17 @@
 
 namespace ACAT\Document\Word;
 
+use ACAT\Document\MarkupDocument;
 use DOMDocument;
 use Exception;
 use ZipArchive;
 use ACAT\Utils\FileUtils;
-use ACAT\Document\Document;
 use ACAT\Exception\DocumentException;
 
 /**
  *
  */
-class WordDocument extends Document {
+class WordDocument extends MarkupDocument {
 
 	/**
 	 * @var ZipArchive|null

@@ -3,14 +3,17 @@
 namespace ACAT\Document\HTML;
 
 use ACAT\Document\Document;
+use ACAT\Document\MarkupDocument;
 use ACAT\Exception\DocumentException;
 use DOMDocument;
 use DOMXPath;
+use JetBrains\PhpStorm\Pure;
+use phpDocumentor\Reflection\Utils;
 
 /**
  *
  */
-class HTMLDocument extends Document {
+class HTMLDocument extends MarkupDocument {
 
 	/**
 	 * @var HTMLContentPart
@@ -76,4 +79,11 @@ class HTMLDocument extends Document {
 		return $this->contentPart;
 	}
 
+	/**
+	 * @return array
+	 */
+	#[Pure]
+	public function getContentParts(): array {
+		return [$this->contentPart];
+	}
 }

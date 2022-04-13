@@ -30,16 +30,32 @@ class RenderEngineTest extends TestCase {
 	 */
 	public function renderInvoiceWithEmptyResultSet() : void {
 
-		$currentDocument = __DIR__ . "/Resources/Rechnung_empty_lck.docx";
-		copy(__DIR__ . '/Resources/Rechnung.docx', $currentDocument);
-
-		$wordDocument = new WordDocument($currentDocument);
-		$this->assertInstanceOf(WordDocument::class, $wordDocument);
-
+		$wordDocument = $this->getWordDocument();
 		$wordDocument->open();
 
 		$renderEngine = new RenderEngine($wordDocument);
 		$renderEngine->render();
+
+		$wordDocument->save();
+		$wordDocument->close();
+
+	}
+
+	/**
+	 * @test
+	 *
+	 * @return void
+	 * @throws DocumentException
+	 * @throws ElementException
+	 * @throws TagGeneratorException
+	 */
+	public function getRecordStructure () : void {
+
+		$wordDocument = $this->getWordDocument();
+		$wordDocument->open();
+
+		$renderEngine = new RenderEngine($wordDocument);
+		$recordStructure = $renderEngine->getRecordStructure();
 
 		$wordDocument->save();
 		$wordDocument->close();
@@ -57,11 +73,7 @@ class RenderEngineTest extends TestCase {
 	 */
 	public function renderInvoiceWithResultSet() : void {
 
-		$currentDocument = __DIR__ . "/resources/Rechnung_not_empty_lck.docx";
-		copy(__DIR__ . '/resources/Rechnung.docx', $currentDocument);
 
-		$wordDocument = new WordDocument($currentDocument);
-		$this->assertInstanceOf(WordDocument::class, $wordDocument);
 
 		$wordDocument->open();
 
@@ -75,6 +87,20 @@ class RenderEngineTest extends TestCase {
 
 	}
 
+	/**
+	 * @return WordDocument
+	 * @throws DocumentException
+	 */
+	private function getWordDocument() : WordDocument {
 
+		$currentDocument = __DIR__ . "/resources/Rechnung_not_empty_lck.docx";
+		copy(__DIR__ . '/resources/Rechnung.docx', $currentDocument);
+
+		$wordDocument = new WordDocument($currentDocument);
+		$this->assertInstanceOf(WordDocument::class, $wordDocument);
+
+		return $wordDocument;
+
+	}
 
 }
