@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 /**
  *
  */
-class RenderEngineTest extends TestCase {
+class RenderEngineTest extends AbstractRenderTest {
 
 	/**
 	 * @test
@@ -42,27 +42,6 @@ class RenderEngineTest extends TestCase {
 	}
 
 	/**
-	 * @test
-	 *
-	 * @return void
-	 * @throws DocumentException
-	 * @throws ElementException
-	 * @throws TagGeneratorException
-	 */
-	public function getRecordStructure () : void {
-
-		$wordDocument = $this->getWordDocument();
-		$wordDocument->open();
-
-		$renderEngine = new RenderEngine($wordDocument);
-		$recordStructure = $renderEngine->getRecordStructure();
-
-		$wordDocument->save();
-		$wordDocument->close();
-
-	}
-
-	/**
 	 * @return void
 	 * @throws ConditionParserException
 	 * @throws DOMException
@@ -73,8 +52,7 @@ class RenderEngineTest extends TestCase {
 	 */
 	public function renderInvoiceWithResultSet() : void {
 
-
-
+		$wordDocument = $this->getWordDocument();
 		$wordDocument->open();
 
 		foreach ($wordDocument->getContentParts() as $contentPart) {
@@ -87,20 +65,5 @@ class RenderEngineTest extends TestCase {
 
 	}
 
-	/**
-	 * @return WordDocument
-	 * @throws DocumentException
-	 */
-	private function getWordDocument() : WordDocument {
-
-		$currentDocument = __DIR__ . "/resources/Rechnung_not_empty_lck.docx";
-		copy(__DIR__ . '/resources/Rechnung.docx', $currentDocument);
-
-		$wordDocument = new WordDocument($currentDocument);
-		$this->assertInstanceOf(WordDocument::class, $wordDocument);
-
-		return $wordDocument;
-
-	}
 
 }

@@ -3,6 +3,8 @@
 namespace Tests\Render;
 
 use ACAT\Document\Word\WordContentPart;
+use ACAT\Document\Word\WordDocument;
+use ACAT\Exception\DocumentException;
 use ACAT\Exception\ElementException;
 use ACAT\Parser\Element\ElementGenerator;
 use ACAT\Parser\Element\Word\WordElementGenerator;
@@ -128,5 +130,22 @@ class AbstractRenderTest extends TestCase {
 	public function getConditionElementGenerator() : WordElementGenerator {
 		return ElementGenerator::getInstance($this->getConditionContentPart());
 	}
+
+	/**
+	 * @return WordDocument
+	 * @throws DocumentException
+	 */
+	protected function getWordDocument() : WordDocument {
+
+		$currentDocument = __DIR__ . "/resources/Rechnung_not_empty_lck.docx";
+		copy(__DIR__ . '/resources/Rechnung.docx', $currentDocument);
+
+		$wordDocument = new WordDocument($currentDocument);
+		$this->assertInstanceOf(WordDocument::class, $wordDocument);
+
+		return $wordDocument;
+
+	}
+
 
 }

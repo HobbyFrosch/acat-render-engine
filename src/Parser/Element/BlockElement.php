@@ -157,7 +157,8 @@ abstract class BlockElement {
                 }
 			}
 			catch (ElementException $e) {
-				Logging::getFormLogger()->warn($e);
+				//@todo handle excpetion
+				//Logging::getFormLogger()->warn($e);
 			}
 		}
 
