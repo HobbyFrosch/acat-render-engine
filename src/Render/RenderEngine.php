@@ -50,21 +50,6 @@ class RenderEngine {
 	private ElementGenerator $elementGenerator;
 
 	/**
-	 * @param WordDocument|null $wordDocument
-	 */
-	#[Pure]
-	public function __construct(WordDocument $wordDocument = null, $values = []) {
-
-		$this->wordDocument = $wordDocument;
-		$this->normalizer = new Normalizer();
-
-		if ($values) {
-			$this->values = $values;
-		}
-
-	}
-
-	/**
 	 * @param ContentPart $contentPart
 	 * @return void
 	 * @throws ConditionParserException
@@ -92,6 +77,8 @@ class RenderEngine {
 	}
 
 	/**
+	 * @param WordDocument|null $wordDocument
+	 * @param array $values
 	 * @return void
 	 * @throws ConditionParserException
 	 * @throws DOMException
@@ -100,10 +87,19 @@ class RenderEngine {
 	 * @throws RenderException
 	 * @throws TagGeneratorException
 	 */
-	public function render(): void {
+	public function render(WordDocument $wordDocument = null, array $values = []): void {
+
+		$this->wordDocument = $wordDocument;
+		$this->normalizer = new Normalizer();
+
+		if ($values) {
+			$this->values = $values;
+		}
+
 		foreach ($this->wordDocument->getContentParts() as $contentPart) {
 			$this->renderContentPart($contentPart);
 		}
+
 	}
 
 	/**

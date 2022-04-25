@@ -10,7 +10,6 @@ use ACAT\Exception\RenderException;
 use ACAT\Exception\TagGeneratorException;
 use ACAT\Render\RenderEngine;
 use DOMException;
-use PHPUnit\Framework\TestCase;
 
 /**
  *
