@@ -27,11 +27,6 @@ use JetBrains\PhpStorm\Pure;
 class RenderEngine {
 
 	/**
-	 * @var WordDocument|null
-	 */
-	private ?WordDocument $wordDocument;
-
-	/**
 	 * @var array
 	 */
 	private array $values = [
@@ -89,16 +84,18 @@ class RenderEngine {
 	 */
 	public function render(WordDocument $wordDocument = null, array $values = []): void {
 
-		$this->wordDocument = $wordDocument;
+		$wordDocument->open();
 		$this->normalizer = new Normalizer();
 
 		if ($values) {
 			$this->values = $values;
 		}
 
-		foreach ($this->wordDocument->getContentParts() as $contentPart) {
+		foreach ($wordDocument->getContentParts() as $contentPart) {
 			$this->renderContentPart($contentPart);
 		}
+
+		$wordDocument->close(true);
 
 	}
 
