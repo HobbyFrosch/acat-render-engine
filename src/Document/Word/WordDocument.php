@@ -36,7 +36,7 @@ class WordDocument extends MarkupDocument {
 	public function getContentParts(): array {
 
 		if (!$this->zipArchive) {
-			throw new DocumentException('document is not open');
+			$this->open();
 		}
 
 		if (!empty($this->contentParts)) {
@@ -147,7 +147,7 @@ class WordDocument extends MarkupDocument {
 	public function save(): void {
 
 		if (!$this->zipArchive) {
-			throw new DocumentException('no document is open');
+			throw new DocumentException('document is not open');
 		}
 
 		foreach ($this->contentParts as $contentPart) {

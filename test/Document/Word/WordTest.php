@@ -21,12 +21,6 @@ class WordTest extends TestCase {
 
 		$this->assertInstanceOf(WordDocument::class, $wordDocument);
 
-		$wordDocument->open();
-
-		foreach ($wordDocument->getContentParts() as $contentPart) {
-
-		}
-
 	}
 
 	/**

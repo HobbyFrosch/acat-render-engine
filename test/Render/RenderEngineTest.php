@@ -2,7 +2,6 @@
 
 namespace Tests\Render;
 
-use ACAT\Document\Word\WordDocument;
 use ACAT\Exception\ConditionParserException;
 use ACAT\Exception\DocumentException;
 use ACAT\Exception\ElementException;
@@ -30,13 +29,9 @@ class RenderEngineTest extends AbstractRenderTest {
 	public function renderInvoiceWithEmptyResultSet() : void {
 
 		$wordDocument = $this->getWordDocument();
-		$wordDocument->open();
 
-		$renderEngine = new RenderEngine($wordDocument);
-		$renderEngine->render();
-
-		$wordDocument->save();
-		$wordDocument->close();
+		$renderEngine = new RenderEngine();
+		$renderEngine->render($wordDocument, []);
 
 	}
 
