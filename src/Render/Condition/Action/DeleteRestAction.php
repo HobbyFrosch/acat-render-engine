@@ -19,7 +19,7 @@ class DeleteRestAction extends ConditionAction {
 		$parentRunNode = DOMUtils::getParentNode($this->conditionElement->getElement(), 'w:r');
 
 		if ($parentRunNode) {
-			$elements = $this->conditionElement->getContentPart()->getXPath()->query("following-sibling::*", $parentRunNode);
+			$elements = $this->conditionElement->getXPath()->query("following-sibling::*", $parentRunNode);
 			foreach ($elements as $element) {
 				$removedNode = $element->parentNode->removeChild($element);
 				if ($removedNode != $element) {
