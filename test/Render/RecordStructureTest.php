@@ -26,16 +26,7 @@ class RecordStructureTest extends AbstractRenderTest {
 		$renderEngine = new RecordStructure($wordDocument);
 		$recordStructure = $renderEngine->getRecordStructure();
 
-		$wordDocument->save();
 		$wordDocument->close();
-
-		foreach ($this->getRecordStructureValues() as $contentPartKey => $contentPartRecordStructure) {
-			$this->assertArrayHasKey($contentPartKey, $recordStructure);
-			foreach ($contentPartRecordStructure as $structureParts) {
-				//$this->assertArrayHasKey();
-			}
-
-		}
 
 	}
 

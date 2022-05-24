@@ -88,7 +88,7 @@ final class RecordStructure {
 		$blockStructure = [];
 		foreach ($this->elementGenerator->getBlocks() as $key => $block) {
 			$blockStructure[$key] = [
-				'fields' => $this->parseStructure($block->getFieldElements()),
+				'fields'     => $this->parseStructure($block->getFieldElements()),
 				'conditions' => $this->parseConditionElements($block->getConditionElements())
 			];
 		}

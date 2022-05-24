@@ -19,7 +19,6 @@ use ACAT\Render\Element\FieldRender;
 use ACAT\Render\Element\TextRender;
 use ACAT\Render\Element\ViewElementRender;
 use DOMException;
-use JetBrains\PhpStorm\Pure;
 
 /**
  *
@@ -33,6 +32,11 @@ class RenderEngine {
 		'fields' => [],
 		'blocks' => []
 	];
+
+	/**
+	 * @var array
+	 */
+	private array $documentValues = [];
 
 	/**
 	 * @var Normalizer
@@ -54,6 +58,17 @@ class RenderEngine {
 	 * @throws TagGeneratorException
 	 */
 	public function renderContentPart(ContentPart $contentPart): void {
+
+		if (array_key_exists($contentPart->getPath(), $this->documentValues)) {
+			$this->values = $this->documentValues[$contentPart->getPath()];
+		}
+		else {
+			$this->values = [
+				'views'  => [],
+				'fields' => [],
+				'blocks' => [],
+			];
+		}
 
 		$this->normalizer->normalize($contentPart);
 
@@ -88,7 +103,7 @@ class RenderEngine {
 		$this->normalizer = new Normalizer();
 
 		if ($values) {
-			$this->values = $values;
+			$this->documentValues = $values;
 		}
 
 		foreach ($wordDocument->getContentParts() as $contentPart) {
