@@ -147,5 +147,11 @@ class AbstractRenderTest extends TestCase {
 
 	}
 
+	/**
+	 * @return array
+	 */
+	protected function getData() : array {
+		return json_decode('{"word/document.xml":{"fields":{"68":"30804","1676":"PL - 10155","1741":"4200004","1742":"17.05.2022","1744":"","1745":"Box56ler","1747":"Petra","1748":"","1749":"","1750":"","1752":"","1757":"","1760":"","1761":"","1762":"","1765":"DEMO Process Programm Master","1768":"","1769":"01.06.2022","1770":"31.05.2023","1771":"5.600,00 €","1772":"5.600,00 €","1780":"x","1783":"","1858":"","1860":"","1862":"","1863":"","1868":"<a href=\"index.php?module=rechnung&view=Detail&record=\"></a>","1869":"<a href=\"index.php?module=rechnung&view=Detail&record=\"></a>","1918":"0,00 €","1921":"","1922":null,"1923":"0,00 €","1964":"","1965":"","rechnung_id":5156},"blocks":{"2":{"fields":[{"1772":"5.600,00 €","1786":"01.06.2022","1787":"5.600,00 €","rechnung_id":5156}]}}},"customXml/itemProps1.xml":{"fields":{"rechnung_id":5156}},"word/numbering.xml":{"fields":{"rechnung_id":5156}},"word/styles.xml":{"fields":{"rechnung_id":5156}},"word/settings.xml":{"fields":{"rechnung_id":5156}},"word/webSettings.xml":{"fields":{"rechnung_id":5156}},"word/footnotes.xml":{"fields":{"rechnung_id":5156}},"word/endnotes.xml":{"fields":{"rechnung_id":5156}},"word/header1.xml":{"fields":{"rechnung_id":5156}},"word/header2.xml":{"fields":{"rechnung_id":5156}},"word/footer1.xml":{"fields":{"rechnung_id":5156}},"word/footer2.xml":{"fields":{"rechnung_id":5156}},"word/header3.xml":{"fields":{"478":"Ronny","479":"Krämer","481":"ronny.kraemer@uni-bremen.de","489":"+49 421 218 61629","490":"3.030","495":null,"501":"Mary-Somerville Str. 3","rechnung_id":5156}},"word/footer3.xml":{"fields":{"rechnung_id":5156}},"word/fontTable.xml":{"fields":{"rechnung_id":5156}},"word/webextensions/taskpanes.xml":{"fields":{"rechnung_id":5156}},"word/webextensions/webextension1.xml":{"fields":{"rechnung_id":5156}},"word/theme/theme1.xml":{"fields":{"rechnung_id":5156}},"docProps/core.xml":{"fields":{"rechnung_id":5156}},"docProps/app.xml":{"fields":{"rechnung_id":5156}}}', "JSON_OBJECT_AS_ARRAY");
+	}
 
 }

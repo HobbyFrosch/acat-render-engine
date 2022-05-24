@@ -35,7 +35,11 @@ class RenderEngineTest extends AbstractRenderTest {
 
 	}
 
+
+
 	/**
+	 * @test
+	 *
 	 * @return void
 	 * @throws ConditionParserException
 	 * @throws DOMException
@@ -47,15 +51,9 @@ class RenderEngineTest extends AbstractRenderTest {
 	public function renderInvoiceWithResultSet() : void {
 
 		$wordDocument = $this->getWordDocument();
-		$wordDocument->open();
 
-		foreach ($wordDocument->getContentParts() as $contentPart) {
-			$renderEngine = new RenderEngine($contentPart, 'DETAILVIEW', 'rechnung');
-			$renderEngine->render(2684);
-		}
-
-		$wordDocument->save();
-		$wordDocument->close();
+		$renderEngine = new RenderEngine();
+		$renderEngine->render($wordDocument, $this->getData());
 
 	}
 

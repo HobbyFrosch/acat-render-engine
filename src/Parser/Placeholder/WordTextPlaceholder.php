@@ -50,6 +50,10 @@ class WordTextPlaceholder extends ACatPlaceholder {
 	 */
 	public function getDOMNode(DOMDocument $domDocument) : DOMNode {
 
+		if ($this->text == null) {
+			$this->text = "";
+		}
+
 		$elementNode = $domDocument->createElement('w:t');
 		$textNode = $domDocument->createTextNode($this->text);
 
