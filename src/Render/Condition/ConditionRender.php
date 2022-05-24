@@ -9,6 +9,7 @@ use ACAT\Parser\Element\ConditionElement;
 use ACAT\Render\Condition\Action\ConditionAction;
 use ACAT\Render\Condition\Action\ConditionParser;
 use ACAT\Render\Render;
+use ACAT\Utils\DOMUtils;
 
 /**
  *
@@ -27,7 +28,7 @@ class ConditionRender extends Render {
 
 		$conditionParser = new ConditionParser();
 
-		if ($conditionParser->evaluateCondition($conditionElement, $values)) {
+		if (!DOMUtils::isRemoved($conditionElement->getElement()) && $conditionParser->evaluateCondition($conditionElement, $values)) {
 			$conditionAction = ConditionAction::getAction($conditionElement);
 			$conditionAction->execute();
 		}
