@@ -15,12 +15,13 @@
   },
   "require": {
     "php": ">=8.1",
-    "ext-json": "*",
-    "ext-xml": "*",
     "ext-dom": "*",
-    "ext-zip": "*",
+    "ext-json": "*",
     "ext-mbstring": "*",
     "ext-openssl": "*",
+    "ext-xml": "*",
+    "ext-zip": "*",
+    "psr/log": "^3.0",
     "symfony/uid": "^5.2"
   },
   "require-dev": {

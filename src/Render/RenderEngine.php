@@ -19,6 +19,7 @@ use ACAT\Render\Element\FieldRender;
 use ACAT\Render\Element\TextRender;
 use ACAT\Render\Element\ViewElementRender;
 use DOMException;
+use Psr\Log\LoggerInterface;
 
 /**
  *
@@ -89,17 +90,14 @@ class RenderEngine {
 	/**
 	 * @param WordDocument|null $wordDocument
 	 * @param array $values
+	 * @param LoggerInterface|null $logger
 	 * @return void
-	 * @throws ConditionParserException
-	 * @throws DOMException
-	 * @throws DocumentException
-	 * @throws ElementException
-	 * @throws RenderException
-	 * @throws TagGeneratorException
 	 */
-	public function render(WordDocument $wordDocument = null, array $values = []): void {
+	public function render(WordDocument $wordDocument = null, array $values = [], LoggerInterface $logger = null): void {
 
-		$wordDocument->open();
+		try {
+			$wordDocument->open();
+
 		$this->normalizer = new Normalizer();
 
 		if ($values) {
@@ -111,6 +109,18 @@ class RenderEngine {
 		}
 
 		$wordDocument->close(true);
+
+		}
+		catch ( DocumentException |
+		        ConditionParserException |
+				ElementException |
+				RenderException |
+				TagGeneratorException |
+				DOMException $e) {
+
+				$logger?->error($e);
+
+		}
 
 	}
 
