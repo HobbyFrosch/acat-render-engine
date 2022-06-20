@@ -19,12 +19,7 @@ class RenderEngineTest extends AbstractRenderTest {
 	 * @test
 	 *
 	 * @return void
-	 * @throws ConditionParserException
 	 * @throws DocumentException
-	 * @throws ElementException
-	 * @throws RenderException
-	 * @throws TagGeneratorException
-	 * @throws DOMException
 	 */
 	public function renderInvoiceWithEmptyResultSet() : void {
 
@@ -45,8 +40,6 @@ class RenderEngineTest extends AbstractRenderTest {
 	 * @throws DOMException
 	 * @throws DocumentException
 	 * @throws ElementException
-	 * @throws RenderException
-	 * @throws TagGeneratorException
 	 */
 	public function renderInvoiceWithResultSet() : void {
 

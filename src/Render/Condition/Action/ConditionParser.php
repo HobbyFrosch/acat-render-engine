@@ -45,8 +45,8 @@ class ConditionParser {
 		$operator = $termValues['operator'];
 		$compareValue = $termValues['value'];
 
-		if ($compareValue && StringUtils::startsWith($compareValue, "F")) {
-			$compareFieldId = str_replace('F', '', $compareValue);
+		if ($compareValue && StringUtils::startsWith($compareValue, "FIELD_COMPARE_")) {
+			$compareFieldId = str_replace('FIELD_COMPARE_', '', $compareValue);
 			if ($compareFieldId && array_key_exists($compareFieldId, $values)) {
 				$compareValue = $values[$compareFieldId];
 			}
