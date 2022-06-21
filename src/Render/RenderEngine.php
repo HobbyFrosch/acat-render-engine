@@ -105,7 +105,7 @@ class RenderEngine {
 		try {
 
 			$wordDocument->open();
-			$this->normalizer = new Normalizer();
+			$this->normalizer = new Normalizer($logger);
 
 			if ($values) {
 				$this->documentValues = $values;
