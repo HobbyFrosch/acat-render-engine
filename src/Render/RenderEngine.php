@@ -27,6 +27,11 @@ use Psr\Log\LoggerInterface;
 class RenderEngine {
 
 	/**
+	 * @var LoggerInterface|null
+	 */
+	private ?LoggerInterface $logger = null;
+
+	/**
 	 * @var array
 	 */
 	private array $values = [
@@ -95,30 +100,32 @@ class RenderEngine {
 	 */
 	public function render(WordDocument $wordDocument = null, array $values = [], LoggerInterface $logger = null): void {
 
+		$this->logger = $logger;
+
 		try {
+
 			$wordDocument->open();
+			$this->normalizer = new Normalizer();
 
-		$this->normalizer = new Normalizer();
+			if ($values) {
+				$this->documentValues = $values;
+			}
 
-		if ($values) {
-			$this->documentValues = $values;
+			foreach ($wordDocument->getContentParts() as $contentPart) {
+				$this->renderContentPart($contentPart);
+			}
+
+			$wordDocument->close(true);
+
 		}
-
-		foreach ($wordDocument->getContentParts() as $contentPart) {
-			$this->renderContentPart($contentPart);
-		}
-
-		$wordDocument->close(true);
-
-		}
-		catch ( DocumentException |
-		        ConditionParserException |
-				ElementException |
-				RenderException |
-				TagGeneratorException |
+		catch (DocumentException|
+				ConditionParserException|
+				ElementException|
+				RenderException|
+				TagGeneratorException|
 				DOMException $e) {
 
-				$logger?->error($e);
+			$this->logger?->error($e);
 
 		}
 

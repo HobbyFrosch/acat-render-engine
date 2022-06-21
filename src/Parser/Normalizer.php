@@ -5,6 +5,8 @@ namespace ACAT\Parser;
 use ACAT\Document\Word\WordContentPart;
 use ACAT\Utils\StringUtils;
 use DOMNode;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 
 /**
  *
@@ -22,10 +24,24 @@ class Normalizer {
 	private WordContentPart $contentPart;
 
 	/**
+	 * @var LoggerInterface|null
+	 */
+	private ?LoggerInterface $logger;
+
+	/**
+	 * @param LoggerInterface|null $logger
+	 */
+	public function __construct(?LoggerInterface $logger = null) {
+		$this->logger = $logger;
+	}
+
+	/**
 	 * @param WordContentPart $contentPart
 	 * @return void
 	 */
 	public function normalize(WordContentPart $contentPart): void {
+
+		$this->log(LogLevel::INFO, 'starting normalizer...');
 
 		$this->contentPart = $contentPart;
 		$textNodes = $this->contentPart->getXPath()->query(ParserConstants::WORD_TEXT_NODES);
@@ -33,6 +49,8 @@ class Normalizer {
 		foreach ($textNodes as $textNode) {
 			$this->processTextNode($textNode);
 		}
+
+		$this->log(LogLevel::INFO, 'normalizer finished with ' . $textNodes->length . ' text nodes');
 
 	}
 
@@ -42,20 +60,21 @@ class Normalizer {
 	private function processTextNode(DOMNode $textNode): void {
 
 		$nodeValue = $textNode->nodeValue;
+		$this->log(LogLevel::DEBUG, 'processing node with value ' . $nodeValue);
 
 		preg_match_all(ParserConstants::MARKER_REG_EX, $nodeValue, $matches);
 		$nodeValue = $this->removePlaceHoldersFromNodeValue($matches, $nodeValue);
 
-		if ((!empty($this->textNodes) || StringUtils::contains($nodeValue, '$') || StringUtils::contains($nodeValue, '}'))) {
+		if ((!empty($this->textNodes) || str_contains($nodeValue, '$') || str_contains($nodeValue, '}'))) {
 
-			if (!empty($this->textNodes) && StringUtils::contains($nodeValue, '$') && !StringUtils::contains($nodeValue, '}')) {
+			if (!empty($this->textNodes) && str_contains($nodeValue, '$') && !str_contains($nodeValue, '}')) {
 				$this->textNodes = [];
 			}
 
-			if (!StringUtils::contains($nodeValue, '}')) {
+			if (!str_contains($nodeValue, '}')) {
 				$this->textNodes[] = $textNode;
 			}
-			else if (!empty($this->textNodes) && StringUtils::contains($nodeValue, '$')) {
+			else if (!empty($this->textNodes) && str_contains($nodeValue, '$')) {
 
 				[$end] = explode('$', $nodeValue);
 				$this->textNodes[count($this->textNodes) - 1]->nodeValue .= $end;
@@ -100,11 +119,17 @@ class Normalizer {
 	 * @return string
 	 */
 	private function removePlaceHoldersFromNodeValue(array $placeHolders, string $nodeValue): string {
+
+		$this->log(LogLevel::DEBUG, 'removing placeholder from node with value ' . $nodeValue);
+
 		foreach ($placeHolders as $placeHolder) {
 			if(array_key_exists(0, $placeHolder)) {
 				$nodeValue = str_replace($placeHolder[0], '', $nodeValue);
 			}
 		}
+
+		$this->log(LogLevel::DEBUG, 'finished. new value is '. $nodeValue);
+
 		return $nodeValue;
 	}
 
@@ -124,6 +149,8 @@ class Normalizer {
 	 */
 	private function cleanUpNodes(DOMNode $node): void {
 
+		$this->log(LogLevel::DEBUG, 'cleaning up nodes');
+
 		foreach ($this->contentPart->getHierarchy() as $level) {
 			if ($node->parentNode) {
 				$parentNode = $node->parentNode;
@@ -138,6 +165,17 @@ class Normalizer {
 			}
 		}
 
+		$this->log(LogLevel::DEBUG, 'finished cleaning up nodes');
+
+	}
+
+	/**
+	 * @param string $level
+	 * @param string $message
+	 * @return void
+	 */
+	private function log(string $level, string $message) {
+		$this->logger?->log($level, $message);
 	}
 
 }
