@@ -56,7 +56,7 @@ class TextPlaceholder extends ACatPlaceholder {
 		$elementNode = $domDocument->createElementNS($this->namespace, 'acat:text');
 		$textNode = $domDocument->createTextNode($this->text);
 
-		$idAttribute = $preserverAttribute = $domDocument->createAttribute('id');
+		$idAttribute = $domDocument->createAttribute('id');
 		$idAttribute->nodeValue = $this->id;
 
 		$preserverAttribute = $domDocument->createAttribute('space');

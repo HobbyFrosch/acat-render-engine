@@ -12,37 +12,15 @@ use JetBrains\PhpStorm\Pure;
 class WordContentPart extends ContentPart {
 
 	/**
-	 *
-	 */
-	protected string $path;
-
-	/**
 	 * @var array|string[]
 	 */
 	protected array $hierarchy = ['w:t', 'w:r', 'w:p'];
-
-	/**
-	 * @param string $path
-	 * @param string $content
-	 */
-	#[Pure]
-	public function __construct(string $path, string $content) {
-		$this->path = $path;
-		parent::__construct($content);
-	}
 
 	/**
 	 * @return array
 	 */
 	public function getNamespaces(): array {
 		return ParserConstants::$wordNamespaces;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getPath(): string {
-		return $this->path;
 	}
 
 	/**

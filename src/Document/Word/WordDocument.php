@@ -58,10 +58,10 @@ class WordDocument extends MarkupDocument {
 				$content = $this->readFromFile($path);
 
 				if ($path === 'word/settings.xml') {
-					$contentPart = new SettingsContentPart($path, $content);
+					$contentPart = new SettingsContentPart($content, $path);
 				}
 				else {
-					$contentPart = new WordContentPart($path, $content);
+					$contentPart = new WordContentPart($content, $path);
 				}
 
 				$this->contentParts[$path] = $contentPart;

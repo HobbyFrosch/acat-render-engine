@@ -9,6 +9,7 @@ use ACAT\Exception\RenderException;
 use ACAT\Exception\TagGeneratorException;
 use ACAT\Render\RenderEngine;
 use DOMException;
+use Monolog\Logger;
 
 /**
  *
@@ -36,16 +37,13 @@ class RenderEngineTest extends AbstractRenderTest {
 	 * @test
 	 *
 	 * @return void
-	 * @throws ConditionParserException
-	 * @throws DOMException
 	 * @throws DocumentException
-	 * @throws ElementException
 	 */
 	public function renderInvoiceWithResultSet() : void {
 
 		$wordDocument = $this->getWordDocument();
 
-		$renderEngine = new RenderEngine();
+		$renderEngine = new RenderEngine($this->getLogger());
 		$renderEngine->render($wordDocument, $this->getData());
 
 	}

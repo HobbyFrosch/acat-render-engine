@@ -21,4 +21,7 @@ class ViewElement extends Element {
         return $id;
     }
 
+	public function getType(): string {
+		return "VIEW";
+	}
 }

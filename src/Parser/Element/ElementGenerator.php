@@ -13,11 +13,18 @@ use ACAT\Utils\DOMUtils;
 use DOMElement;
 use DOMNode;
 use DOMNodeList;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 
 /**
  *
  */
 abstract class ElementGenerator {
+
+	/**
+	 * @var LoggerInterface|null
+	 */
+	private ?LoggerInterface $logger;
 
 	/**
 	 * @var ContentPart
@@ -51,25 +58,31 @@ abstract class ElementGenerator {
 
 	/**
 	 * @param ContentPart $contentPart
+	 * @param LoggerInterface|null $logger
 	 * @throws ElementException
 	 */
-	private function __construct(ContentPart $contentPart) {
+	private function __construct(ContentPart $contentPart, LoggerInterface $logger = null) {
+
+		$this->logger = $logger;
 		$this->contentPart = $contentPart;
+
 		$this->generateElements();
+
 	}
 
 	/**
 	 * @param ContentPart $contentPart
+	 * @param LoggerInterface|null $logger
 	 * @return ElementGenerator
 	 * @throws ElementException
 	 */
-	static function getInstance(ContentPart $contentPart) : ElementGenerator {
+	static function getInstance(ContentPart $contentPart, LoggerInterface $logger = null) : ElementGenerator {
 
 		if ($contentPart instanceof WordContentPart) {
-			return new WordElementGenerator($contentPart);
+			return new WordElementGenerator($contentPart, $logger);
 		}
 		else if ($contentPart instanceof HTMLContentPart) {
-			return new HtmlElementGenerator($contentPart);
+			return new HtmlElementGenerator($contentPart, $logger);
 		}
 
 		throw new ElementException('unknown content type');
@@ -97,8 +110,6 @@ abstract class ElementGenerator {
 		return $this->tableRowBlocks;
 	}
 
-
-
 	/**
 	 * @return void
 	 * @throws ElementException
@@ -113,16 +124,24 @@ abstract class ElementGenerator {
 	 */
 	public function getTextElements(): array {
 
+		$this->log(LogLevel::INFO, 'looking for text elements in ' . $this->contentPart->getPath());
+
 		$found = false;
 		$textElements = [];
+
 		$nodes = $this->getContentPart()->getXPath()->query('//' . ParserConstants::ACAT_TEXT_NODES);
+
+		$this->log(LogLevel::INFO, 'message found ' . $nodes->length . ' text nodes in ' . $this->contentPart->getPath());
 
 		foreach ($nodes as $node) {
 			foreach ($this->getBlocks() as $block) {
 				foreach ($block->getTextElements() as $textElement) {
 					if ($node->isSameNode($textElement->getElement())) {
+
+						$this->log(LogLevel::DEBUG, 'found text element ' . $node->nodeValue . ' in block -> skipping');
 						$found = true;
 						break;
+
 					}
 				}
 				if ($found) {
@@ -137,6 +156,8 @@ abstract class ElementGenerator {
 			}
 		}
 
+		$this->log(LogLevel::INFO, 'processing ' . count($textElements) . ' text elements');
+
 		return $textElements;
 
 	}
@@ -148,10 +169,14 @@ abstract class ElementGenerator {
 	 */
 	public function getContentElements(string $nodeType = ParserConstants::ACAT_FIELD_NODE): array {
 
+		$this->log(LogLevel::INFO, 'looking for content elements in ' . $this->contentPart->getPath());
+
 		$found = false;
 		$fieldElements = [];
 
 		$nodes = $this->getContentPart()->getXPath()->query('//' . $nodeType);
+
+		$this->log(LogLevel::INFO, 'found ' . $nodes->length . ' content elements');
 
 		foreach ($nodes as $node) {
 			if ($nodeType === ParserConstants::ACAT_VIEW_NODE) {
@@ -160,10 +185,15 @@ abstract class ElementGenerator {
 			else {
 				$fieldElement = new FieldElement($node);
 			}
+
 			foreach ($this->getBlocks() as $block) {
 				if (in_array($fieldElement->getId(), $block->getElementIds())) {
+
+					$this->log(LogLevel::DEBUG, $fieldElement->getType() . ' is already in block -> skipping');
+
 					$found = true;
 					break;
+
 				}
 			}
 			if (!$found) {
@@ -173,6 +203,8 @@ abstract class ElementGenerator {
 				$found = false;
 			}
 		}
+
+		$this->log(LogLevel::INFO, 'processing ' . count($fieldElements) . ' content elements');
 
 		return $fieldElements;
 
@@ -202,6 +234,8 @@ abstract class ElementGenerator {
 
 		$found = false;
 		$conditionElements = [];
+
+		$this->log(LogLevel::INFO, 'looking for condition elements in ' . $this->contentPart->getPath());
 
 		$nodes = $this->getContentPart()->getXPath()->query('//' . ParserConstants::ACAT_CONDITION_NODE);
 
@@ -380,6 +414,15 @@ abstract class ElementGenerator {
 
 		return $elements;
 
+	}
+
+	/**
+	 * @param string $level
+	 * @param string $message
+	 * @return void
+	 */
+	protected function log(string $level, string $message) {
+		$this->logger?->log($level, $message);
 	}
 
 }

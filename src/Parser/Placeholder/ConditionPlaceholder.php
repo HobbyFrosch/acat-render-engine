@@ -7,6 +7,7 @@ use ACAT\Utils\StringUtils;
 use DOMDocument;
 use DOMException;
 use DOMNode;
+use JetBrains\PhpStorm\Pure;
 
 /**
  *
@@ -145,9 +146,10 @@ class ConditionPlaceholder extends ACatPlaceholder {
 	 * @param string $prefix
 	 * @return string
 	 */
+	#[Pure]
 	public function getXMLTagAsString(string $prefix = 'acat') : string {
 
-		$tag = "<acat:condition field=" . $this->getFieldId() . " id=" . $this->getId() . " action= " . $this->action . ">";
+		$tag = "<acat:condition field=" . $this->getFieldId() . " id=" . $this->getId() . " action=" . $this->action . ">";
 		$tag .= $this->expression;
 		$tag .= "/>";
 

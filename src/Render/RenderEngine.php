@@ -29,7 +29,7 @@ class RenderEngine {
 	/**
 	 * @var LoggerInterface|null
 	 */
-	private ?LoggerInterface $logger = null;
+	private ?LoggerInterface $logger;
 
 	/**
 	 * @var array
@@ -55,6 +55,13 @@ class RenderEngine {
 	private ElementGenerator $elementGenerator;
 
 	/**
+	 * @param LoggerInterface|null $logger
+	 */
+	public function __construct(?LoggerInterface $logger = null) {
+		$this->logger = $logger;
+	}
+
+	/**
 	 * @param ContentPart $contentPart
 	 * @return void
 	 * @throws ConditionParserException
@@ -78,10 +85,10 @@ class RenderEngine {
 
 		$this->normalizer->normalize($contentPart);
 
-		$tagGenerator = TagGenerator::getInstance($contentPart);
+		$tagGenerator = TagGenerator::getInstance($contentPart, $this->logger);
 		$tagGenerator->generateTags();
 
-		$this->elementGenerator = ElementGenerator::getInstance($contentPart);
+		$this->elementGenerator = ElementGenerator::getInstance($contentPart, $this->logger);
 
 		$this->renderConditionElements();
 		$this->renderFieldElements();
@@ -95,17 +102,14 @@ class RenderEngine {
 	/**
 	 * @param WordDocument|null $wordDocument
 	 * @param array $values
-	 * @param LoggerInterface|null $logger
 	 * @return void
 	 */
-	public function render(WordDocument $wordDocument = null, array $values = [], LoggerInterface $logger = null): void {
-
-		$this->logger = $logger;
+	public function render(WordDocument $wordDocument = null, array $values = []): void {
 
 		try {
 
 			$wordDocument->open();
-			$this->normalizer = new Normalizer($logger);
+			$this->normalizer = new Normalizer($this->logger);
 
 			if ($values) {
 				$this->documentValues = $values;

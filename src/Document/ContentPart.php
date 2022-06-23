@@ -10,6 +10,11 @@ use DOMDocument;
  */
 abstract class ContentPart {
 
+	/**
+	 * @var string
+	 */
+	protected string $path;
+
     /**
      * @var string
      */
@@ -31,13 +36,15 @@ abstract class ContentPart {
     protected ?DOMDocument $domDocument = null;
 
 	/**
+	 * @param string $path
 	 * @param string $content
 	 */
-    public function __construct(string $content) {
-        $this->content = $content;
-    }
+	public function __construct(string $content, string $path = "") {
+		$this->path = $path;
+		$this->content = $content;
+	}
 
-    /**
+	/**
      * @return DOMXPath
      */
     public function getXPath(): DOMXPath {
@@ -76,6 +83,13 @@ abstract class ContentPart {
 	    $this->domDocument = new DOMDocument('1.0', 'utf-8');
 	    $this->domDocument->loadXML($this->content);
     }
+
+	/**
+	 * @return string
+	 */
+	public function getPath(): string {
+		return $this->path;
+	}
 
 	/**
 	 * @return string

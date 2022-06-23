@@ -41,7 +41,7 @@ class Normalizer {
 	 */
 	public function normalize(WordContentPart $contentPart): void {
 
-		$this->log(LogLevel::INFO, 'starting normalizer...');
+		$this->log(LogLevel::INFO, 'starting normalizer for content part ' . $contentPart->getPath());
 
 		$this->contentPart = $contentPart;
 		$textNodes = $this->contentPart->getXPath()->query(ParserConstants::WORD_TEXT_NODES);
@@ -50,6 +50,7 @@ class Normalizer {
 			$this->processTextNode($textNode);
 		}
 
+		$this->log(LogLevel::DEBUG, $this->contentPart->getDomDocument()->saveXML());
 		$this->log(LogLevel::INFO, 'normalizer finished with ' . $textNodes->length . ' text nodes');
 
 	}
@@ -99,6 +100,8 @@ class Normalizer {
 	 */
 	private function mergeNodes(): void {
 
+		$this->log(LogLevel::DEBUG, 'merging nodes');
+
 		$placeHolder = $this->getPlaceHolderValue();
 		preg_match_all(ParserConstants::MARKER_REG_EX, $placeHolder, $matches);
 
@@ -110,6 +113,8 @@ class Normalizer {
 		}
 
 		$this->textNodes = [];
+
+		$this->log(LogLevel::DEBUG, 'merging finished');
 
 	}
 
@@ -128,7 +133,7 @@ class Normalizer {
 			}
 		}
 
-		$this->log(LogLevel::DEBUG, 'finished. new value is '. $nodeValue);
+		$this->log(LogLevel::DEBUG, 'removing finished. new value is '. $nodeValue);
 
 		return $nodeValue;
 	}
@@ -137,11 +142,17 @@ class Normalizer {
 	 * @return string
 	 */
 	private function getPlaceHolderValue(): string {
+
 		$value = "";
+
 		foreach ($this->textNodes as $textNode) {
 			$value .= $textNode->nodeValue;
 		}
+
+		$this->log(LogLevel::DEBUG, 'new placeholder value ' . $value);
+
 		return $value;
+
 	}
 
 	/**

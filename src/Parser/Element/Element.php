@@ -122,4 +122,11 @@ abstract class Element {
 		}
 	}
 
+	/**
+	 * @return string
+	 */
+	public function getType() : string {
+		return "";
+	}
+
 }

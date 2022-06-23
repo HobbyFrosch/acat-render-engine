@@ -6,6 +6,7 @@ use ACAT\Document\ContentPart;
 use ACAT\Parser\ParserConstants;
 use DOMNode;
 use DOMNodeList;
+use Psr\Log\LogLevel;
 
 /**
  *
@@ -24,7 +25,11 @@ class WordTagGenerator extends TagGenerator {
 	 */
 	public function generateTags(): void {
 
+		$this->log(LogLevel::INFO, 'starting tag generator for content part ' . $this->contentPart->getPath());
+
 		$textNodes = $this->getTextNodes();
+
+		$this->log(LogLevel::DEBUG, 'content part hast ' . $textNodes->length . ' text nodes');
 
 		foreach ($textNodes as $textNode) {
 			preg_match_all(ParserConstants::MARKER_REG_EX, $textNode->nodeValue, $matches, PREG_OFFSET_CAPTURE, 0);
@@ -34,6 +39,9 @@ class WordTagGenerator extends TagGenerator {
 			}
 		}
 
+		$this->log(LogLevel::DEBUG, $this->contentPart->getDomDocument()->saveXML());
+		$this->log(LogLevel::INFO, 'finished tag generator');
+
 	}
 
 	/**
@@ -42,9 +50,14 @@ class WordTagGenerator extends TagGenerator {
 	 */
 	private function insertNodes(array $nodes, DOMNode $textNode): void {
 
+		$this->log(LogLevel::INFO, 'inserting tags in content part');
+
 		$beforeNode = $textNode;
 
 		for ($i = count($nodes) - 1; $i >= 0; $i--) {
+
+			$this->log(LogLevel::DEBUG, 'inserting tag ' . $nodes[$i]->getXMLTagAsString());
+
 			$insertNode = $nodes[$i]->getDOMNode($this->contentPart->getDomDocument());
 			$beforeNode = $textNode->parentNode->insertBefore($insertNode, $beforeNode);
 		}
