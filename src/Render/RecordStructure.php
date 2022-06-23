@@ -12,11 +12,17 @@ use ACAT\Parser\Normalizer;
 use ACAT\Parser\Tag\TagGenerator;
 use JetBrains\PhpStorm\ArrayShape;
 use JetBrains\PhpStorm\Pure;
+use Psr\Log\LoggerInterface;
 
 /**
  *
  */
 final class RecordStructure {
+
+	/**
+	 * @var LoggerInterface|null
+	 */
+	private ?LoggerInterface $logger;
 
 	/**
 	 * @var MarkupDocument
@@ -35,11 +41,13 @@ final class RecordStructure {
 
 	/**
 	 * @param MarkupDocument $document
+	 * @param LoggerInterface|null $logger
 	 */
 	#[Pure]
-	public function __construct(MarkupDocument $document) {
+	public function __construct(MarkupDocument $document, LoggerInterface $logger = null) {
+		$this->logger = $logger;
 		$this->document = $document;
-		$this->normalizer = new Normalizer();
+		$this->normalizer = new Normalizer($this->logger);
 	}
 
 	/**
@@ -65,8 +73,8 @@ final class RecordStructure {
 
 		$recordStructure = [];
 
-		$tagGenerator = TagGenerator::getInstance($contentPart);
-		$this->elementGenerator = ElementGenerator::getInstance($contentPart);
+		$tagGenerator = TagGenerator::getInstance($contentPart, $this->logger);
+		$this->elementGenerator = ElementGenerator::getInstance($contentPart, $this->logger);
 
 		$this->normalizer->normalize($contentPart);
 		$tagGenerator->generateTags();
