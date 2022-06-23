@@ -127,15 +127,16 @@ class Normalizer {
 
 		$this->log(LogLevel::DEBUG, 'removing placeholder from node with value ' . $nodeValue);
 
-		foreach ($placeHolders as $placeHolder) {
-			if(array_key_exists(0, $placeHolder)) {
-				$nodeValue = str_replace($placeHolder[0], '', $nodeValue);
+		if (array_key_exists(0, $placeHolders)) {
+			foreach ($placeHolders[0] as $placeHolder) {
+				$nodeValue = str_replace($placeHolder, '', $nodeValue);
 			}
 		}
 
 		$this->log(LogLevel::DEBUG, 'removing finished. new value is '. $nodeValue);
 
 		return $nodeValue;
+
 	}
 
 	/**

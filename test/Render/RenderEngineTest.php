@@ -31,8 +31,6 @@ class RenderEngineTest extends AbstractRenderTest {
 
 	}
 
-
-
 	/**
 	 * @test
 	 *
@@ -48,5 +46,19 @@ class RenderEngineTest extends AbstractRenderTest {
 
 	}
 
+	/**
+	 * @test
+	 *
+	 * @return void
+	 * @throws DocumentException
+	 */
+	public function renderTestDok() : void {
+
+		$wordDocument = $this->getZulassung();
+
+		$renderEngine = new RenderEngine($this->getLogger());
+		$renderEngine->render($wordDocument, $this->getData());
+
+	}
 
 }

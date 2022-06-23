@@ -153,6 +153,22 @@ class AbstractRenderTest extends TestCase {
 	}
 
 	/**
+	 * @return WordDocument
+	 * @throws DocumentException
+	 */
+	protected function getZulassung() : WordDocument {
+
+		$currentDocument = __DIR__ . "/resources/Zulassung_not_empty_lck.docx";
+		copy(__DIR__ . '/resources/Zulassung.docx', $currentDocument);
+
+		$wordDocument = new WordDocument($currentDocument);
+		$this->assertInstanceOf(WordDocument::class, $wordDocument);
+
+		return $wordDocument;
+
+	}
+
+	/**
 	 * @return array
 	 */
 	protected function getData() : array {
