@@ -12,23 +12,22 @@ use DOMNode;
 class FieldPlaceholder extends ACatPlaceholder {
 
 	/**
-	 * @var int
+	 * @var string
 	 */
-	protected int $fieldId;
+	protected string $fieldId;
 
 	/**
-	 * FieldNode constructor.
-	 * @param int $fieldId
+	 * @param string $fieldId
 	 */
-	public function __construct(int $fieldId) {
+	public function __construct(string $fieldId) {
 		parent::__construct();
 		$this->fieldId = $fieldId;
 	}
 
 	/**
-	 * @return int
+	 * @return string
 	 */
-	public function getFieldId() : int {
+	public function getFieldId() : string {
 		return $this->fieldId;
 	}
 
