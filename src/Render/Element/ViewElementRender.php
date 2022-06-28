@@ -8,6 +8,7 @@ use ACAT\Parser\Element\ViewElement;
 use ACAT\Parser\Placeholder\WordTextPlaceholder;
 use ACAT\Render\Render;
 use DOMException;
+use Psr\Log\LogLevel;
 
 /**
  *
@@ -26,14 +27,13 @@ class ViewElementRender extends Render {
 
         $viewId = $viewElement->getFieldId();
 
-        if ($viewId && array_key_exists($viewId, $values)) {
+		if (!$viewId) {
+			$this->log(LogLevel::WARNING, "view element has no id. skipping");
+		}
 
+        if (array_key_exists($viewId, $values)) {
             $wordTextNode = new WordTextPlaceholder($values[$viewId]);
 			$this->appendRenderedNode($viewElement->getElement(), $wordTextNode->getDOMNode($viewElement->getDomDocument()));
-
-        }
-        else {
-            throw new RenderException($viewElement->getElement()->nodeName . ' does not contains a field id');
         }
 
         $viewElement->delete();

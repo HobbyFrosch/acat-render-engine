@@ -176,7 +176,7 @@ class RenderEngine {
 	 */
 	public function renderViewElements(): void {
 
-		$viewElementRender = new ViewElementRender();
+		$viewElementRender = new ViewElementRender($this->logger);
 		$viewElements = $this->elementGenerator->getViewElements();
 
 		if ($viewElements) {
@@ -193,7 +193,7 @@ class RenderEngine {
 	 */
 	public function renderConditionElements(): void {
 
-		$conditionRender = new ConditionRender();
+		$conditionRender = new ConditionRender($this->logger);
 		$conditionElements = $this->elementGenerator->getConditionElements();
 
 		if ($conditionElements) {
@@ -214,7 +214,7 @@ class RenderEngine {
 		$blockElements = $this->elementGenerator->getBlocks();
 
 		if ($blockElements) {
-			$blockRender = new BlockRender();
+			$blockRender = new BlockRender($this->logger);
 			$blockRender->render($blockElements, $this->values);
 		}
 

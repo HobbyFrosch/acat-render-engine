@@ -4,11 +4,24 @@ namespace ACAT\Render;
 
 use ACAT\Utils\DOMUtils;
 use DOMElement;
+use Psr\Log\LoggerInterface;
 
 /**
  *
  */
 abstract class Render {
+
+	/**
+	 * @var LoggerInterface|null
+	 */
+	private ?LoggerInterface $logger;
+
+	/**
+	 * @param LoggerInterface|null $logger
+	 */
+	public function __construct(?LoggerInterface $logger = null) {
+		$this->logger = $logger;
+	}
 
 	/**
 	 * @param DOMElement $element
@@ -27,6 +40,15 @@ abstract class Render {
 		if (!DOMUtils::isRemoved($element)) {
 			$element->parentNode->removeChild($element);
 		}
+	}
+
+	/**
+	 * @param string $level
+	 * @param string $message
+	 * @return void
+	 */
+	protected function log(string $level, string $message) {
+		$this->logger?->log($level, $message);
 	}
 
 	/**
