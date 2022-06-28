@@ -14,7 +14,7 @@ class DeleteRemainingElementsAction extends ConditionAction {
 	 * @throws RenderException
 	 */
 	public function execute() : void {
-		$nodes = $this->conditionElement->getXpath()->query('.//acat:field|.//acat:text', $this->conditionElement->getElement());
+		$nodes = $this->conditionElement->getXpath()->query('.//acat:field|.//acat:text|.//acat:view', $this->conditionElement->getElement());
 		foreach ($nodes as $node) {
 			$deletedNode = $node->parentNode->removeChild($node);
 			if (!$deletedNode->isSameNode($node)) {

@@ -197,7 +197,13 @@ class RenderEngine {
 		$conditionElements = $this->elementGenerator->getConditionElements();
 
 		if ($conditionElements) {
-			$conditionRender->render($conditionElements, $this->values['fields']);
+			if (array_key_exists('views', $this->values)) {
+				$values = $this->values['fields'] + $this->values['views'];
+			}
+			else {
+				$values = $this->values['fields'];
+			}
+			$conditionRender->render($conditionElements, $values);
 		}
 
 	}

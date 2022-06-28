@@ -13,7 +13,7 @@ class DeleteNextElementAction extends ConditionAction {
 	/**
 	 * @var string
 	 */
-	private string $query = './/acat:field|.//acat:text';
+	private string $query = './/acat:field|.//acat:text|.//acat:view';
 
 	/**
 	 * @return void

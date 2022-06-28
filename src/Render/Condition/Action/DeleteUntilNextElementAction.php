@@ -14,7 +14,7 @@ class DeleteUntilNextElementAction extends ConditionAction {
 	/**
 	 * @var array|string[]
 	 */
-	private array $validNodeNames = ['acat:condition', 'acat:field', 'acat:text'];
+	private array $validNodeNames = ['acat:condition', 'acat:field', 'acat:text', 'acat:view'];
 
 	/**
 	 * @return void
