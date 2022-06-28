@@ -19,7 +19,6 @@ class ViewElementRender extends Render {
 	 * @param ViewElement $viewElement
 	 * @param array $values
 	 * @return void
-	 * @throws RenderException
 	 * @throws ElementException
 	 * @throws DOMException
 	 */
