@@ -45,7 +45,6 @@ class ViewElementRender extends Render {
 	 * @return void
 	 * @throws DOMException
 	 * @throws ElementException
-	 * @throws RenderException
 	 */
     public function render(array $elements, array $values = []) : void {
         foreach ($elements as $element) {

@@ -57,7 +57,7 @@ class RenderEngineTest extends AbstractRenderTest {
 		$wordDocument = $this->getZulassung();
 
 		$renderEngine = new RenderEngine($this->getLogger());
-		$renderEngine->render($wordDocument, $this->getData());
+		$renderEngine->render($wordDocument, $this->getZData());
 
 	}
 

@@ -180,7 +180,7 @@ class RenderEngine {
 		$viewElements = $this->elementGenerator->getViewElements();
 
 		if ($viewElements) {
-			$viewElementRender->render($viewElements);
+			$viewElementRender->render($viewElements, $this->values['views']);
 		}
 
 	}
