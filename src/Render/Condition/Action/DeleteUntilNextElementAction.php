@@ -32,6 +32,7 @@ class DeleteUntilNextElementAction extends ConditionAction {
 	 */
 	private function getNodesToDelete() : array {
 
+		$count = 0;
 		$found = false;
 		$nodesToDelete = [];
 
@@ -46,16 +47,22 @@ class DeleteUntilNextElementAction extends ConditionAction {
 		foreach ($runNodes as $runNode) {
 			$nodes = $this->conditionElement->getXPath()->query('child::*', $runNode);
 			foreach ($nodes as $node) {
-				if (!$node->isSameNode($this->conditionElement->getElement())) {
+				if ($node->isSameNode($this->conditionElement->getElement())) {
+					$found = true;
+				}
+				else if ($found) {
 					if (in_array($node->nodeName, $this->validNodeNames)) {
-						if ($found) {
+						if ($count == 0) {
+							$nodesToDelete[] = $node;
+							$count = 1;
+						}
+						else if ($count == 1) {
 							return $nodesToDelete;
 						}
-						else {
-							$found = true;
-						}
 					}
-					$nodesToDelete[] = $node;
+					else {
+						$nodesToDelete[] = $node;
+					}
 				}
 			}
 		}

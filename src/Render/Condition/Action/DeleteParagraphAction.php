@@ -15,7 +15,6 @@ class DeleteParagraphAction extends ConditionAction {
 	/**
 	 * @return void
 	 * @throws RenderException
-	 * @throws ElementException
 	 */
 	public function execute() : void {
 

@@ -172,7 +172,6 @@ class RenderEngine {
 	 * @return void
 	 * @throws DOMException
 	 * @throws ElementException
-	 * @throws RenderException
 	 */
 	public function renderViewElements(): void {
 

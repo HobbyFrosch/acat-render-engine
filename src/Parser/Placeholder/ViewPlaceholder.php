@@ -37,7 +37,7 @@ class ViewPlaceholder extends FieldPlaceholder {
      * @return string
      */
     public function getXMLTagAsString() : string {
-        return "<acat:view id" . $this->getId() . " field=" . $this->fieldId . "/>";
+        return '<acat:view id="' . $this->getId() . '" field="' . $this->fieldId . '"/>';
     }
 
     /**
