@@ -84,6 +84,12 @@ final class RecordStructure {
 		$recordStructure['blocks'] = $this->getBlockStructure();
 		$recordStructure['conditions'] = $this->getConditionStructure();
 
+		foreach ($recordStructure['conditions'] as $condition) {
+			if (str_starts_with($condition['field'], 'V') && !in_array($condition['field'], $recordStructure['views'])) {
+				$recordStructure['views'][] = $condition['field'];
+			}
+		}
+
 		return $recordStructure;
 
 	}

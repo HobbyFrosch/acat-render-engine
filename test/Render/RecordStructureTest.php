@@ -20,7 +20,7 @@ class RecordStructureTest extends AbstractRenderTest {
 	 */
 	public function getRecordStructure(): void {
 
-		$wordDocument = $this->getWordDocument();
+		$wordDocument = $this->getZulassung();
 		$wordDocument->open();
 
 		$renderEngine = new RecordStructure($wordDocument);
