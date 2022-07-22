@@ -6,6 +6,7 @@ use ACAT\Exception\ConditionParserException;
 use ACAT\Exception\ElementException;
 use ACAT\Parser\Element\ConditionElement;
 use ACAT\Utils\StringUtils;
+use DateTime;
 
 /**
  *
@@ -54,6 +55,9 @@ class ConditionParser {
 				$compareValue = null;
 			}
 		}
+
+		$fieldValue = $this->castData($fieldValue);
+		$compareValue = $this->castData($compareValue);
 
 		if ($operator === '<>') {
 			if (!$compareValue) {
@@ -146,6 +150,26 @@ class ConditionParser {
 		}
 
 		return $operator;
+
+	}
+
+	/**
+	 * @param string|null $value
+	 * @return string|null
+	 */
+	private function castData(?string $value) : ?string {
+
+		if (!$value || !str_contains($value, '.')) {
+			return $value;
+		}
+
+		$dateObj = DateTime::createFromFormat('d.m.Y', $value);
+
+		if ($dateObj) {
+			return $dateObj->format('Y-m-d');
+		}
+
+		return $value;
 
 	}
 

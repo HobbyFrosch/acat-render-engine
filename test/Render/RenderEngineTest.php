@@ -39,6 +39,8 @@ class RenderEngineTest extends AbstractRenderTest {
 	 */
 	public function renderInvoiceWithResultSet() : void {
 
+		setlocale (LC_TIME, 'German', 'de_DE', 'deu');
+
 		$wordDocument = $this->getWordDocument();
 
 		$renderEngine = new RenderEngine($this->getLogger());
@@ -57,7 +59,7 @@ class RenderEngineTest extends AbstractRenderTest {
 		$wordDocument = $this->getZulassung();
 
 		$renderEngine = new RenderEngine($this->getLogger());
-		$renderEngine->render($wordDocument, $this->getZData());
+		$renderEngine->render($wordDocument, $this->getEZDate());
 
 	}
 
