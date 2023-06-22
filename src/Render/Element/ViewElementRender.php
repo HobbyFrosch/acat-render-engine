@@ -45,12 +45,11 @@ class ViewElementRender extends Render {
                         $node = $this->createWordTextPlaceholder(trim($element));
                     }
                 }
-                $this->appendRenderedNode($viewElement->getElement(), $node->getDOMNode($viewElement->getDomDocument()));
+                if (isset($node)) {
+                    $this->appendRenderedNode($viewElement->getElement(), $node->getDOMNode($viewElement->getDomDocument()));
+                }
             }
 
-
-            /*$wordTextNode = new WordTextPlaceholder($values[$viewId]);
-			$this->appendRenderedNode($viewElement->getElement(), $wordTextNode->getDOMNode($viewElement->getDomDocument()));*/
         }
 
         $viewElement->delete();
